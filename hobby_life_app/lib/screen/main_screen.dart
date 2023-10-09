@@ -22,7 +22,7 @@ class _MainScreenState extends State<MainScreen> {
     const CalendarScreen(),
     const CommunityScreen(),
     ChatScreen(),
-    const InfoScreen(),
+    InfoScreen(),
   ];
 
   @override
