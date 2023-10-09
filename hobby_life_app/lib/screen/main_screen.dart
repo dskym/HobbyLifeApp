@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:hobby_life_app/component/community_input_modal.dart';
 import 'package:hobby_life_app/component/hobby_history_input_modal.dart';
+import 'package:hobby_life_app/screen/setting_screen.dart';
 
 import 'calendar_screen.dart';
 import 'chat_screen.dart';
@@ -32,9 +33,7 @@ class _MainScreenState extends State<MainScreen> {
         centerTitle: true,
         actions: [
           IconButton(
-            onPressed: () {
-              print('Settings Button is clicked');
-            },
+            onPressed: () => showSettingScreen(),
             icon: const Icon(Icons.settings),
           ),
         ],
@@ -79,6 +78,30 @@ class _MainScreenState extends State<MainScreen> {
               child: const Icon(Icons.add),
             )
           : null,
+    );
+  }
+
+  void showSettingScreen() {
+    Navigator.push(
+      context,
+      PageRouteBuilder(
+        transitionsBuilder:
+            (context, animation, secondaryAnimation, child) {
+          var begin = const Offset(0.0, 1.0);
+          var end = Offset.zero;
+          var curve = Curves.ease;
+
+          var tween = Tween(begin: begin, end: end)
+              .chain(CurveTween(curve: curve));
+
+          return SlideTransition(
+            position: animation.drive(tween),
+            child: child,
+          );
+        },
+        transitionDuration: const Duration(milliseconds: 100),
+        pageBuilder: (context, animation, secondaryAnimation) => const SettingScreen(),
+      ),
     );
   }
 
