@@ -1,11 +1,12 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:hobby_life_app/screen/main_screen.dart';
 import 'package:intl/date_symbol_data_local.dart';
 
 void main() {
   initializeDateFormatting();
 
-  runApp(const MyApp());
+  runApp(const ProviderScope(child: MyApp()));
 }
 
 class MyApp extends StatelessWidget {
