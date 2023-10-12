@@ -38,6 +38,7 @@ dependencies:
   table_calendar: ^3.0.9
   intl: ^0.18.1
   flutter_chat_bubble: ^2.0.2
+  dio: ^4.0.0
 
 dev_dependencies:
   flutter_test:
