@@ -1,7 +1,8 @@
 import 'package:dio/dio.dart';
 import 'package:hobby_life_app/model/common_response_model.dart';
+import 'package:hobby_life_app/model/content_model.dart';
 
-class ContentModel {
+class ContentRepository {
   final _dio = Dio(BaseOptions(
     baseUrl: 'http://localhost:8080',
     connectTimeout: const Duration(seconds: 1).inMilliseconds,
