@@ -1,15 +1,16 @@
-class ChatroomModel {
-  final int chatroomId;
-  final String name;
-  final String description;
+import 'package:freezed_annotation/freezed_annotation.dart';
 
-  ChatroomModel({required this.chatroomId, required this.name, required this.description});
+part 'chatroom_model.freezed.dart';
+part 'chatroom_model.g.dart';
 
-  factory ChatroomModel.fromJson(Map<String, dynamic> json) {
-    return ChatroomModel(
-      chatroomId: json['chatroomId'],
-      name: json['name'],
-      description: json['description'],
-    );
-  }
+@freezed
+class ChatroomModel with _$ChatroomModel {
+  factory ChatroomModel({
+    required int chatroomId,
+    required String name,
+    required String description,
+  }) = _ChatroomModel;
+
+  factory ChatroomModel.fromJson(Map<String, dynamic> json) =>
+      _$ChatroomModelFromJson(json);
 }

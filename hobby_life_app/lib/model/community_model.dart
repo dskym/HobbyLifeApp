@@ -1,19 +1,18 @@
-class CommunityModel {
-  final String communityId;
-  final String title;
-  final String description;
-  final int authorId;
-  final int hobbyId;
+import 'package:freezed_annotation/freezed_annotation.dart';
 
-  CommunityModel({required this.communityId, required this.title, required this.description, required this.authorId, required this.hobbyId});
+part 'community_model.freezed.dart';
+part 'community_model.g.dart';
 
-  factory CommunityModel.fromJson(Map<String, dynamic> json) {
-    return CommunityModel(
-      communityId: json['communityId'],
-      title: json['title'],
-      description: json['description'],
-      authorId: json['authorId'],
-      hobbyId: json['hobbyId'],
-    );
-  }
+@freezed
+class CommunityModel with _$CommunityModel {
+  factory CommunityModel({
+    required int communityId,
+    required String title,
+    required String description,
+    required int authorId,
+    required int hobbyId,
+  }) = _CommunityModel;
+
+  factory CommunityModel.fromJson(Map<String, dynamic> json) =>
+      _$CommunityModelFromJson(json);
 }

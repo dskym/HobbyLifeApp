@@ -1,17 +1,17 @@
-class HobbyHistoryModel {
-  final int id;
-  final int score;
-  final int cost;
-  final DateTime hobbyDate;
+import 'package:freezed_annotation/freezed_annotation.dart';
 
-  HobbyHistoryModel({required this.id, required this.score, required this.cost, required this.hobbyDate});
+part 'hobby_history_model.freezed.dart';
+part 'hobby_history_model.g.dart';
 
-  factory HobbyHistoryModel.fromJson(Map<String, dynamic> json) {
-    return HobbyHistoryModel(
-      id: json['id'],
-      score: json['score'],
-      cost: json['cost'],
-      hobbyDate: DateTime.parse(json['hobbyDate']),
-    );
-  }
+@freezed
+class HobbyHistoryModel with _$HobbyHistoryModel {
+  factory HobbyHistoryModel({
+    required int id,
+    required int score,
+    required int cost,
+    required DateTime hobbyDate,
+  }) = _HobbyHistoryModel;
+
+  factory HobbyHistoryModel.fromJson(Map<String, dynamic> json) =>
+      _$HobbyHistoryModelFromJson(json);
 }

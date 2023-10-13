@@ -1,13 +1,16 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:hobby_life_app/provider/community_provider.dart';
 
-class CommunityInputModal extends StatefulWidget {
+class CommunityInputModal extends ConsumerStatefulWidget {
   const CommunityInputModal({Key? key}) : super(key: key);
 
   @override
-  State<CommunityInputModal> createState() => _CommunityInputModalState();
+  ConsumerState<ConsumerStatefulWidget> createState() =>
+      _CommunityInputModalState();
 }
 
-class _CommunityInputModalState extends State<CommunityInputModal> {
+class _CommunityInputModalState extends ConsumerState<CommunityInputModal> {
   final GlobalKey<FormState> formKey = GlobalKey<FormState>();
 
   String title = '';
@@ -104,6 +107,9 @@ class _CommunityInputModalState extends State<CommunityInputModal> {
   onSave(BuildContext context) async {
     if (formKey.currentState!.validate()) {
       formKey.currentState!.save();
+
+      ref.read(communityListProvider.notifier)
+          .createCommunity(title: title, description: description, hobbyId: 1);
     }
     Navigator.of(context).pop();
   }

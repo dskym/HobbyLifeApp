@@ -1,13 +1,15 @@
-class UserAuthModel {
-  final String accessToken;
-  final String refreshToken;
+import 'package:freezed_annotation/freezed_annotation.dart';
 
-  UserAuthModel({required this.accessToken, required this.refreshToken});
+part 'user_auth_model.freezed.dart';
+part 'user_auth_model.g.dart';
 
-  factory UserAuthModel.fromJson(Map<String, dynamic> json) {
-    return UserAuthModel(
-      accessToken: json['accessToken'],
-      refreshToken: json['refreshToken'],
-    );
-  }
+@freezed
+class UserAuthModel with _$UserAuthModel {
+  factory UserAuthModel({
+    required String accessToken,
+    required String refreshToken,
+  }) = _UserAuthModel;
+
+  factory UserAuthModel.fromJson(Map<String, dynamic> json) =>
+      _$UserAuthModelFromJson(json);
 }
