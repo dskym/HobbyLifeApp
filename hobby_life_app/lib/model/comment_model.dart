@@ -1,19 +1,18 @@
-class CommentModel {
-  final int commentId;
-  final String detail;
-  final int authorId;
-  final int contentId;
-  final int originalCommentId;
+import 'package:freezed_annotation/freezed_annotation.dart';
 
-  CommentModel({required this.commentId, required this.detail, required this.authorId, required this.contentId, required this.originalCommentId});
+part 'comment_model.freezed.dart';
+part 'comment_model.g.dart';
 
-  factory CommentModel.fromJson(Map<String, dynamic> json) {
-    return CommentModel(
-      commentId: json['commentId'],
-      detail: json['detail'],
-      authorId: json['authorId'],
-      contentId: json['contentId'],
-      originalCommentId: json['originalCommentId'],
-    );
-  }
+@freezed
+class CommentModel with _$CommentModel {
+  factory CommentModel({
+    required int commentId,
+    required String detail,
+    required int authorId,
+    required int contentId,
+    required int originalCommentId,
+  }) = _CommentModel;
+
+  factory CommentModel.fromJson(Map<String, dynamic> json) =>
+      _$CommentModelFromJson(json);
 }

@@ -1,13 +1,15 @@
-class HobbyModel {
-  final String id;
-  final String name;
+import 'package:freezed_annotation/freezed_annotation.dart';
 
-  HobbyModel({required this.id, required this.name});
+part 'hobby_model.freezed.dart';
+part 'hobby_model.g.dart';
 
-  factory HobbyModel.fromJson(Map<String, dynamic> json) {
-    return HobbyModel(
-      id: json['id'],
-      name: json['name'],
-    );
-  }
+@freezed
+class HobbyModel with _$HobbyModel {
+  factory HobbyModel({
+    required String id,
+    required String name,
+  }) = _HobbyModel;
+
+  factory HobbyModel.fromJson(Map<String, dynamic> json) =>
+      _$HobbyModelFromJson(json);
 }

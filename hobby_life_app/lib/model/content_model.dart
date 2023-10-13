@@ -1,19 +1,18 @@
-class ContentModel {
-  final String contentId;
-  final String title;
-  final String description;
-  final int authorId;
-  final int communityId;
+import 'package:freezed_annotation/freezed_annotation.dart';
 
-  ContentModel({required this.contentId, required this.title, required this.description, required this.authorId, required this.communityId});
+part 'content_model.freezed.dart';
+part 'content_model.g.dart';
 
-  factory ContentModel.fromJson(Map<String, dynamic> json) {
-    return ContentModel(
-      contentId: json['contentId'],
-      title: json['title'],
-      description: json['description'],
-      authorId: json['authorId'],
-      communityId: json['communityId'],
-    );
-  }
+@freezed
+class ContentModel with _$ContentModel {
+  factory ContentModel({
+    required String contentId,
+    required String title,
+    required String description,
+    required int authorId,
+    required int communityId,
+  }) = _ContentModel;
+
+  factory ContentModel.fromJson(Map<String, dynamic> json) =>
+      _$ContentModelFromJson(json);
 }

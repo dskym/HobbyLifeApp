@@ -4,12 +4,13 @@ import 'package:hobby_life_app/model/hobby_model.dart';
 
 class HobbyRepository {
   final _dio = Dio(BaseOptions(
-    baseUrl: 'http://localhost:8080',
+    baseUrl: 'http://10.0.2.2:8080',
     connectTimeout: const Duration(seconds: 1).inMilliseconds,
     receiveTimeout: const Duration(seconds: 1).inMilliseconds,
     headers: {
       'Content-Type': 'application/json',
       'Accept': 'application/json',
+      'Authorization': 'Bearer eyJhbGciOiJIUzUxMiJ9.eyJzdWIiOiIyOSIsImV4cCI6MTY5NzIxNjgzMH0.Bg2R5wfY7izCl61hiXlKExZGRDOhCAmL7doOlTGvDjqIsPg0SRhLjwPGY-d1uDjoeI5A0KMoYsx_J31vIkwqMA',
     },
   ));
 
@@ -18,19 +19,20 @@ class HobbyRepository {
       'categoryId': categoryId,
       'hobbyName': hobbyName,
     });
-    CommonResponseModel<HobbyModel> commonResponse = CommonResponseModel.fromJson(response.data);
-    return commonResponse.data!;
+    print("createHobby : ${response.data}");
+    CommonResponseModel<dynamic> commonResponse = CommonResponseModel.fromJson(response.data);
+    return HobbyModel.fromJson(commonResponse.data!);
   }
 
-  Future<HobbyModel> deleteHobby({required int id}) async {
-    final response = await _dio.delete('/hobby/$id');
-    CommonResponseModel<HobbyModel> commonResponse = CommonResponseModel.fromJson(response.data);
-    return commonResponse.data!;
+  Future<void> deleteHobby({required int id}) async {
+    await _dio.delete('/hobby/$id');
+    print("deleteHobby");
   }
 
-  Future<HobbyModel> getHobbyByCategory({required int categoryId}) async {
+  Future<List<HobbyModel>> getHobbyByCategory({required int categoryId}) async {
     final response = await _dio.get('/hobby/$categoryId');
-    CommonResponseModel<HobbyModel> commonResponse = CommonResponseModel.fromJson(response.data);
-    return commonResponse.data!;
+    print("getHobbyByCategory : ${response.data}");
+    CommonResponseModel<dynamic> commonResponse = CommonResponseModel.fromJson(response.data);
+    return List.from(commonResponse.data?.map((e) => HobbyModel.fromJson(e)) ?? []);
   }
 }

@@ -1,14 +1,17 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:hobby_life_app/component/community_card.dart';
+import 'package:hobby_life_app/model/community_model.dart';
+import 'package:hobby_life_app/provider/community_provider.dart';
 
-class CommunityScreen extends StatefulWidget {
+class CommunityScreen extends ConsumerStatefulWidget {
   const CommunityScreen({super.key});
 
   @override
-  State<CommunityScreen> createState() => _CommunityScreenState();
+  ConsumerState<ConsumerStatefulWidget> createState() => _CommunityScreenState();
 }
 
-class _CommunityScreenState extends State<CommunityScreen>
+class _CommunityScreenState extends ConsumerState<CommunityScreen>
     with TickerProviderStateMixin {
   late TabController _tabController;
 
@@ -31,75 +34,55 @@ class _CommunityScreenState extends State<CommunityScreen>
 
   @override
   Widget build(BuildContext context) {
-    return Column(
-      children: [
-        TabBar(
-          controller: _tabController,
-          isScrollable: true,
-          tabs: _tabs,
-        ),
-        Expanded(
-          child: TabBarView(controller: _tabController, children: [
-            getAllCommunity(),
-            getMyCommunity(),
-          ]),
-        ),
-      ],
+    return FutureBuilder(
+      future: ref.watch(communityListProvider.future),
+      builder: (BuildContext context, AsyncSnapshot snapshot) {
+        print(snapshot);
+        if (snapshot.hasData) {
+          return Column(
+            children: [
+              TabBar(
+                controller: _tabController,
+                isScrollable: true,
+                tabs: _tabs,
+              ),
+              Expanded(
+                child: TabBarView(controller: _tabController, children: [
+                  getAllCommunity(snapshot.data),
+                  getMyCommunity(snapshot.data),
+                ]),
+              ),
+            ],
+          );
+        } else {
+          return const Center(child: CircularProgressIndicator());
+        }
+      },
     );
   }
 
-  Widget getAllCommunity() {
-    final List<String> entries = <String>[
-      'A',
-      'B',
-      'D',
-      'E',
-      'F',
-      'G',
-      'H',
-      'I',
-      'J',
-      'K',
-      'L',
-      'M'
-    ];
-
+  Widget getAllCommunity(List<CommunityModel> communityList) {
     return ListView.builder(
-      itemCount: entries.length,
+      itemCount: communityList.length,
       itemBuilder: (BuildContext context, int index) {
         return CommunityCard(
-          title: "커뮤니티 ${entries[index]}",
-          description: "커뮤니티 ${entries[index]} 설명",
-          category: "커뮤니티 ${entries[index]} 카테고리",
+          title: communityList[index].title,
+          description: communityList[index].description,
+          category: communityList[index].hobbyId.toString(),
           memberCount: 10,
         );
       },
     );
   }
 
-  Widget getMyCommunity() {
-    final List<String> entries = <String>[
-      'A',
-      'B',
-      'D',
-      'E',
-      'F',
-      'G',
-      'H',
-      'I',
-      'J',
-      'K',
-      'L',
-      'M'
-    ];
-
+  Widget getMyCommunity(List<CommunityModel> communityList) {
     return ListView.builder(
-      itemCount: entries.length,
+      itemCount: communityList.length,
       itemBuilder: (BuildContext context, int index) {
         return CommunityCard(
-          title: "커뮤니티 ${entries[index]}",
-          description: "커뮤니티 ${entries[index]} 설명",
-          category: "커뮤니티 ${entries[index]} 카테고리",
+          title: communityList[index].title,
+          description: communityList[index].description,
+          category: communityList[index].hobbyId.toString(),
           memberCount: 10,
         );
       },
