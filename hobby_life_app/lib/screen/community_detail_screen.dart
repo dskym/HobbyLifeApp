@@ -67,6 +67,8 @@ class _CommunityDetailScreenState extends ConsumerState<CommunityDetailScreen> {
                             itemCount: snapshot.data.length,
                             itemBuilder: (BuildContext context, int index) {
                               return ContentCard(
+                                communityId: widget.id,
+                                contentId: snapshot.data[index].contentId,
                                 title: snapshot.data[index].title,
                                 detail: snapshot.data[index].detail,
                                 authorName: snapshot.data[index].authorName,

@@ -2,12 +2,16 @@ import 'package:flutter/material.dart';
 import 'package:hobby_life_app/screen/content_detail_screen.dart';
 
 class ContentCard extends StatelessWidget {
+  final int communityId;
+  final int contentId;
   final String title;
   final String detail;
   final String authorName;
 
   const ContentCard(
       {Key? key,
+      required this.communityId,
+      required this.contentId,
       required this.title,
       required this.detail,
       required this.authorName})
@@ -41,7 +45,7 @@ class ContentCard extends StatelessWidget {
               },
               transitionDuration: const Duration(milliseconds: 100),
               pageBuilder: (context, animation, secondaryAnimation) {
-                return ContentDetailScreen();
+                return ContentDetailScreen(communityId, contentId);
               },
             ),
           );
