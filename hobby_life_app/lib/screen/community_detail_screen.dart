@@ -4,7 +4,7 @@ class CommunityDetailScreen extends StatefulWidget {
   const CommunityDetailScreen({Key? key}) : super(key: key);
 
   @override
-  _CommunityDetailScreenState createState() => _CommunityDetailScreenState();
+  State<CommunityDetailScreen> createState() => _CommunityDetailScreenState();
 }
 
 class _CommunityDetailScreenState extends State<CommunityDetailScreen> {

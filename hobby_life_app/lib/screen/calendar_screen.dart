@@ -1,15 +1,18 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:hobby_life_app/component/hobby_history_card.dart';
+import 'package:hobby_life_app/provider/hobby_history_provider.dart';
+import 'package:intl/intl.dart';
 import 'package:table_calendar/table_calendar.dart';
 
-class CalendarScreen extends StatefulWidget {
+class CalendarScreen extends ConsumerStatefulWidget {
   const CalendarScreen({super.key});
 
   @override
-  State<CalendarScreen> createState() => _CalendarScreenState();
+  ConsumerState<ConsumerStatefulWidget> createState() => _CalendarScreenState();
 }
 
-class _CalendarScreenState extends State<CalendarScreen> {
+class _CalendarScreenState extends ConsumerState<CalendarScreen> {
   DateTime selectedDate = DateTime.now();
 
   @override
@@ -24,90 +27,79 @@ class _CalendarScreenState extends State<CalendarScreen> {
 
   @override
   Widget build(BuildContext context) {
-    List<HobbyHistoryCard> hobbyHistoryCardList = <HobbyHistoryCard>[
-      const HobbyHistoryCard(
-          hobbyName: "hobby1",
-          categoryName: "category1",
-          score: 0,
-          cost: 0,
-          startTime: "10:00:00",
-          endTime: "11:00:00"),
-      const HobbyHistoryCard(
-          hobbyName: "hobby2",
-          categoryName: "category2",
-          score: 10,
-          cost: 20,
-          startTime: "12:00:00",
-          endTime: "14:00:00"),
-      const HobbyHistoryCard(
-          hobbyName: "hobby3",
-          categoryName: "category3",
-          score: 20,
-          cost: 40,
-          startTime: "15:00:00",
-          endTime: "18:00:00"),
-      const HobbyHistoryCard(
-          hobbyName: "hobby4",
-          categoryName: "category4",
-          score: 30,
-          cost: 60,
-          startTime: "16:00:00",
-          endTime: "20:00:00"),
-    ];
-
-    return Column(
-      children: [
-        TableCalendar(
-          headerStyle: const HeaderStyle(
-            formatButtonVisible: false,
-            titleCentered: true,
-            titleTextStyle: TextStyle(
-              fontSize: 17,
-              fontWeight: FontWeight.bold,
-            ),
-          ),
-          calendarStyle: const CalendarStyle(
-            isTodayHighlighted: false,
-            weekendTextStyle: TextStyle(
-              color: Colors.red,
-            ),
-            holidayTextStyle: TextStyle(
-              color: Colors.blue,
-            ),
-            markersAlignment: Alignment.bottomRight,
-          ),
-          firstDay: DateTime.utc(1900, 1, 11),
-          lastDay: DateTime.utc(2100, 12, 31),
-          currentDay: DateTime.now(),
-          focusedDay: selectedDate,
-          locale: 'ko_KR',
-          onDaySelected: (selectedDay, focusedDay) {
-            _onSelectedDay(selectedDay);
-          },
-          selectedDayPredicate: (day) {
-            return isSameDay(day, selectedDate);
-          },
-        ),
-        const Divider(
-          height: 1,
-          thickness: 1,
-          color: Colors.black,
-        ),
-        Expanded(
-          child: ListView.builder(
-            itemCount: hobbyHistoryCardList.length,
-            itemBuilder: (context, index) {
-              return hobbyHistoryCardList[index];
-            },
-          ),
-        ),
-      ],
+    return FutureBuilder(
+      future: ref.watch(hobbyHistoryListProvider(selectedDate).future),
+      builder: (BuildContext context, AsyncSnapshot snapshot) {
+        if (snapshot.hasData) {
+          final sel = DateFormat('yyyy-MM-dd').format(selectedDate);
+          return Column(
+            children: [
+              TableCalendar(
+                headerStyle: const HeaderStyle(
+                  formatButtonVisible: false,
+                  titleCentered: true,
+                  titleTextStyle: TextStyle(
+                    fontSize: 17,
+                    fontWeight: FontWeight.bold,
+                  ),
+                ),
+                calendarStyle: const CalendarStyle(
+                  isTodayHighlighted: false,
+                  weekendTextStyle: TextStyle(
+                    color: Colors.red,
+                  ),
+                  holidayTextStyle: TextStyle(
+                    color: Colors.blue,
+                  ),
+                  markersAlignment: Alignment.bottomRight,
+                ),
+                firstDay: DateTime.utc(1900, 1, 1),
+                lastDay: DateTime.utc(2100, 12, 31),
+                currentDay: DateTime.now(),
+                focusedDay: selectedDate,
+                locale: 'ko_KR',
+                onDaySelected: (selectedDay, focusedDay) {
+                  setState(() {
+                    selectedDate = selectedDay;
+                  });
+                },
+                onPageChanged: (focusedDay) {
+                  selectedDate = focusedDay;
+                },
+                selectedDayPredicate: (day) {
+                  return isSameDay(day, selectedDate);
+                },
+                eventLoader: (day) {
+                  final sel = DateFormat('yyyy-MM-dd').format(day);
+                  return snapshot.data[sel] ?? [];
+                },
+              ),
+              const Divider(
+                height: 1,
+                thickness: 1,
+                color: Colors.black,
+              ),
+              Expanded(
+                child: ListView.builder(
+                  itemCount: snapshot.data[sel]?.length ?? 0,
+                  itemBuilder: (context, index) {
+                    final hobbyHistory = snapshot.data[sel][index];
+                    return HobbyHistoryCard(
+                        hobbyName: hobbyHistory.hobbyName,
+                        categoryName: "",
+                        score: hobbyHistory.score,
+                        cost: hobbyHistory.cost,
+                        startTime: "12:00:00",
+                        endTime: "14:00:00");
+                  },
+                ),
+              ),
+            ],
+          );
+        } else {
+          return const Center(child: CircularProgressIndicator());
+        }
+      },
     );
-  }
-
-  void _onSelectedDay(DateTime date) {
-    setState(() {
-      selectedDate = date;
-    });
   }
 }

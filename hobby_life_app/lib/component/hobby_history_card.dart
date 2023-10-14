@@ -24,8 +24,18 @@ class HobbyHistoryCard extends StatelessWidget {
     return Card(
       child: ListTile(
         leading: const Icon(Icons.history),
-        title: const Text('취미 이력'),
-        subtitle: const Text('취미 이력 설명'),
+        title: Text(hobbyName),
+        subtitle: Row(
+          children: [
+            Text(categoryName),
+            const SizedBox(width: 10),
+            Text('$score 점'),
+            const SizedBox(width: 10),
+            Text('$cost 원'),
+            const SizedBox(width: 10),
+            Text('$startTime ~ $endTime'),
+          ],
+        ),
         onTap: () => showHobbyHistoryInputModal(context),
       ),
     );

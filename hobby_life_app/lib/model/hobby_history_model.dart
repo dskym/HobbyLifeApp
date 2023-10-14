@@ -10,6 +10,7 @@ class HobbyHistoryModel with _$HobbyHistoryModel {
     required int score,
     required int cost,
     required DateTime hobbyDate,
+    required String hobbyName,
   }) = _HobbyHistoryModel;
 
   factory HobbyHistoryModel.fromJson(Map<String, dynamic> json) =>

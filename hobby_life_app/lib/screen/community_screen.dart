@@ -37,19 +37,20 @@ class _CommunityScreenState extends ConsumerState<CommunityScreen>
     return FutureBuilder(
       future: ref.watch(communityListProvider.future),
       builder: (BuildContext context, AsyncSnapshot snapshot) {
-        print(snapshot);
         if (snapshot.hasData) {
           return Column(
             children: [
               TabBar(
                 controller: _tabController,
-                isScrollable: true,
                 tabs: _tabs,
+                onTap: (index) => changeTabBarEvent(index),
               ),
               Expanded(
-                child: TabBarView(controller: _tabController, children: [
-                  getAllCommunity(snapshot.data),
-                  getMyCommunity(snapshot.data),
+                child: TabBarView(
+                  controller: _tabController,
+                  children: [
+                    getAllCommunity(snapshot.data),
+                    getMyCommunity(snapshot.data),
                 ]),
               ),
             ],
@@ -59,6 +60,17 @@ class _CommunityScreenState extends ConsumerState<CommunityScreen>
         }
       },
     );
+  }
+
+  void changeTabBarEvent(int index) {
+    switch (index) {
+      case 0:
+        ref.read(communityListProvider.notifier).getAllCommunity();
+        break;
+      case 1:
+        ref.read(communityListProvider.notifier).joinCommunity();
+        break;
+    }
   }
 
   Widget getAllCommunity(List<CommunityModel> communityList) {
