@@ -17,6 +17,7 @@ class HobbyHistoryList extends _$HobbyHistoryList {
     final hobbyHistoryRepository = ref.read(hobbyHistoryRepositoryProvider);
     final hobbyHistoryModel = await hobbyHistoryRepository.addHobbyHistory(hobbyId: hobbyId, score: score, cost: cost, hobbyDate: hobbyDate);
     final previousState = await future;
+    state = AsyncData({});
 //    state = AsyncData([...previousState, hobbyHistoryModel]);
   }
 
@@ -24,6 +25,7 @@ class HobbyHistoryList extends _$HobbyHistoryList {
     final hobbyHistoryRepository = ref.read(hobbyHistoryRepositoryProvider);
     await hobbyHistoryRepository.deleteHobbyHistory(hobbyHistoryId: id);
     final previousState = await future;
+    state = AsyncData({});
     // state = AsyncData(previousState.where((element) => element.id != id).toList());
   }
 
@@ -31,6 +33,7 @@ class HobbyHistoryList extends _$HobbyHistoryList {
     final hobbyHistoryRepository = ref.read(hobbyHistoryRepositoryProvider);
     final hobbyHistoryModel = await hobbyHistoryRepository.updateHobbyHistory(hobbyHistoryId: hobbyHistoryId, hobbyId: hobbyId, score: score, cost: cost, hobbyDate: hobbyDate);
     final previousState = await future;
+    state = AsyncData({});
     // state = AsyncData(previousState.map((element) {
     //   if (element.id == hobbyHistoryId) {
     //     return element.copyWith(score: score, cost: cost, hobbyDate: hobbyDate);
@@ -42,6 +45,7 @@ class HobbyHistoryList extends _$HobbyHistoryList {
   Future<void> getHobbyHistory({required int hobbyHistoryId}) async {
     final hobbyHistoryRepository = ref.read(hobbyHistoryRepositoryProvider);
     final hobbyHistoryModel = await hobbyHistoryRepository.getHobbyHistory(hobbyHistoryId: hobbyHistoryId);
+    state = AsyncData({});
     // state = AsyncData([hobbyHistoryModel]);
   }
 }

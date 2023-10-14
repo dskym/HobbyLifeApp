@@ -1,13 +1,17 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:hobby_life_app/provider/hobby_history_provider.dart';
 
-class HobbyHistoryInputModal extends StatefulWidget {
+class HobbyHistoryInputModal extends ConsumerStatefulWidget {
   const HobbyHistoryInputModal({Key? key}) : super(key: key);
 
   @override
-  State<HobbyHistoryInputModal> createState() => _HobbyHistoryInputModalState();
+  ConsumerState<ConsumerStatefulWidget> createState() =>
+      _HobbyHistoryInputModalState();
 }
 
-class _HobbyHistoryInputModalState extends State<HobbyHistoryInputModal> {
+class _HobbyHistoryInputModalState
+    extends ConsumerState<HobbyHistoryInputModal> {
   final GlobalKey<FormState> formKey = GlobalKey<FormState>();
 
   String hobbyDate = '';
@@ -183,6 +187,10 @@ class _HobbyHistoryInputModalState extends State<HobbyHistoryInputModal> {
   onSave(BuildContext context) async {
     if (formKey.currentState!.validate()) {
       formKey.currentState!.save();
+
+      ref.read(hobbyHistoryListProvider(DateTime.now()).notifier)
+          .createHobbyHistory(
+              hobbyId: 1, score: score, cost: cost, hobbyDate: DateTime.now());
     }
     Navigator.of(context).pop();
   }

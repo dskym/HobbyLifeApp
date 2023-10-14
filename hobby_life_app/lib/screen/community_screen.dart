@@ -80,7 +80,7 @@ class _CommunityScreenState extends ConsumerState<CommunityScreen>
         return CommunityCard(
           title: communityList[index].title,
           description: communityList[index].description,
-          category: communityList[index].hobbyId.toString(),
+          category: communityList[index].categoryName,
           memberCount: 10,
         );
       },
@@ -94,7 +94,7 @@ class _CommunityScreenState extends ConsumerState<CommunityScreen>
         return CommunityCard(
           title: communityList[index].title,
           description: communityList[index].description,
-          category: communityList[index].hobbyId.toString(),
+          category: communityList[index].categoryName,
           memberCount: 10,
         );
       },

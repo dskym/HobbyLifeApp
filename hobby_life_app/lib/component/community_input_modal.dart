@@ -1,5 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:hobby_life_app/model/category_model.dart';
+import 'package:hobby_life_app/provider/category_provider.dart';
 import 'package:hobby_life_app/provider/community_provider.dart';
 
 class CommunityInputModal extends ConsumerStatefulWidget {
@@ -15,7 +17,7 @@ class _CommunityInputModalState extends ConsumerState<CommunityInputModal> {
 
   String title = '';
   String description = '';
-  String categoryName = '';
+  int categoryId = 0;
 
   @override
   void initState() {
@@ -42,14 +44,14 @@ class _CommunityInputModalState extends ConsumerState<CommunityInputModal> {
                   onPressed: () => goBackScreen(context),
                 ),
                 const SizedBox(width: 10),
-                const Text('커뮤니티 생성'),
+                const Text('커뮤니티 개설'),
               ],
             ),
             TextFormField(
               initialValue: title,
-              keyboardType: TextInputType.datetime,
+              keyboardType: TextInputType.text,
               decoration: const InputDecoration(
-                labelText: '커뮤니티 이름',
+                labelText: '이름',
                 hintText: '커뮤니티 이름을 입력해주세요.',
               ),
               validator: (String? value) {
@@ -60,11 +62,13 @@ class _CommunityInputModalState extends ConsumerState<CommunityInputModal> {
               },
               onSaved: (newValue) => title = newValue!,
             ),
+            const SizedBox(height: 10),
             TextFormField(
               initialValue: description,
-              keyboardType: TextInputType.text,
+              keyboardType: TextInputType.multiline,
+              maxLines: 5,
               decoration: const InputDecoration(
-                labelText: '커뮤니티에 대한 설명',
+                labelText: '설명',
                 hintText: '커뮤니티에 대한 설명을 입력해주세요.',
               ),
               validator: (String? value) {
@@ -75,21 +79,29 @@ class _CommunityInputModalState extends ConsumerState<CommunityInputModal> {
               },
               onSaved: (newValue) => description = newValue!,
             ),
-            TextFormField(
-              initialValue: categoryName,
-              keyboardType: TextInputType.text,
-              decoration: const InputDecoration(
-                labelText: '카테고리',
-                hintText: '카테고리를 선택해주세요.',
-              ),
-              validator: (String? value) {
-                if (value == null || value.isEmpty) {
-                  return '카테고리를 선택해주세요.';
+            const SizedBox(height: 10),
+            FutureBuilder(
+              future: ref.read(categoryListProvider.future),
+              builder: (BuildContext context, AsyncSnapshot snapshot) {
+                if (snapshot.hasData) {
+                  return DropdownButtonFormField<CategoryModel>(
+                    hint: const Text('커뮤니티 카테고리를 선택해주세요.'),
+                    items: snapshot.data
+                        .map<DropdownMenuItem<CategoryModel>>(
+                            (CategoryModel category) =>
+                                DropdownMenuItem<CategoryModel>(
+                                  value: category,
+                                  child: Text(category.name),
+                                ))
+                        .toList(),
+                    onChanged: (value) => categoryId = value?.id ?? 0,
+                  );
+                } else {
+                  return const Center(child: CircularProgressIndicator());
                 }
-                return null;
               },
-              onSaved: (newValue) => categoryName = newValue!,
             ),
+            const SizedBox(height: 10),
             ElevatedButton(
               onPressed: () => onSave(context),
               child: const Text('저장'),
@@ -108,8 +120,9 @@ class _CommunityInputModalState extends ConsumerState<CommunityInputModal> {
     if (formKey.currentState!.validate()) {
       formKey.currentState!.save();
 
-      ref.read(communityListProvider.notifier)
-          .createCommunity(title: title, description: description, hobbyId: 1);
+      ref
+          .read(communityListProvider.notifier)
+          .createCommunity(title: title, description: description, categoryId: categoryId);
     }
     Navigator.of(context).pop();
   }
