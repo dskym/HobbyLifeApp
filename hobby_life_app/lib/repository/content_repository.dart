@@ -1,3 +1,5 @@
+import 'dart:ffi';
+
 import 'package:dio/dio.dart';
 import 'package:hobby_life_app/model/common_response_model.dart';
 import 'package:hobby_life_app/model/content_model.dart';
@@ -24,11 +26,9 @@ Future<ContentModel> createContent({required String communityId, required String
     return ContentModel.fromJson(commonResponse.data!);
   }
 
-Future<ContentModel> deleteContent({required String communityId, required String contentId}) async {
+Future<void> deleteContent({required String communityId, required String contentId}) async {
     final response = await _dio.delete('/community/$communityId/content/$contentId');
     print("deleteContent : ${response.data}");
-    CommonResponseModel<dynamic> commonResponse = CommonResponseModel.fromJson(response.data);
-    return ContentModel.fromJson(commonResponse.data!);
   }
 
 Future<ContentModel> updateContent({required String communityId, required String contentId, required String title, required String detail}) async {
