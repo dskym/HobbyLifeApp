@@ -14,7 +14,7 @@ class CommentRepository {
     },
   ));
 
-  Future<CommentModel> createComment({required String communityId, required String contentId, required String detail, required int originCommentId}) async {
+  Future<CommentModel> createComment({required String communityId, required String contentId, required String detail, required int? originCommentId}) async {
     final response = await _dio.post('/community/$communityId/content/$contentId/comment', data: {
       'detail': detail,
       'originCommentId': originCommentId,
@@ -41,10 +41,10 @@ class CommentRepository {
     return CommentModel.fromJson(commonResponse.data!);
   }
 
-  Future<CommentModel> getComment({required String communityId, required String contentId}) async {
-    final response = await _dio.get('/community/$communityId/content/$contentId/comment/');
+  Future<List<CommentModel>> getAllComment({required String communityId, required String contentId}) async {
+    final response = await _dio.get('/community/$communityId/content/$contentId/comment');
     print("getComment : ${response.data}");
     CommonResponseModel<dynamic> commonResponse = CommonResponseModel.fromJson(response.data);
-    return CommentModel.fromJson(commonResponse.data!);
+    return List.from(commonResponse.data?.map((e) => CommentModel.fromJson(e)) ?? []);
   }
 }

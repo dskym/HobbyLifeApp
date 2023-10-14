@@ -8,9 +8,9 @@ class CommentModel with _$CommentModel {
   factory CommentModel({
     required int commentId,
     required String detail,
-    required int authorId,
-    required int contentId,
-    required int originalCommentId,
+    required String authorName,
+    required DateTime lastModified,
+    required int? originalCommentId,
   }) = _CommentModel;
 
   factory CommentModel.fromJson(Map<String, dynamic> json) =>
