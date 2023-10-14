@@ -55,18 +55,14 @@ class CommunityRepository {
     return List.from(commonResponse.data?.map((e) => CommunityModel.fromJson(e)) ?? []);
   }
 
-  Future<CommunityModel> joinCommunity({required String communityId}) async {
+  Future<void> joinCommunity({required String communityId}) async {
     final response = await _dio.post('/community/$communityId/join');
     print("joinCommunity : ${response.data}");
-    CommonResponseModel<dynamic> commonResponse = CommonResponseModel.fromJson(response.data);
-    return CommunityModel.fromJson(commonResponse.data!);
   }
 
-  Future<CommunityModel> leaveCommunity({required String communityId}) async {
-    final response = await _dio.delete('/community/$communityId/leave');
-    print("leaveCommunity : ${response.data}");
-    CommonResponseModel<dynamic> commonResponse = CommonResponseModel.fromJson(response.data);
-    return CommunityModel.fromJson(commonResponse.data!);
+  Future<void> leaveCommunity({required String communityId}) async {
+    await _dio.delete('/community/$communityId/leave');
+    print("leaveCommunity");
   }
 
   Future<List<CommunityModel>> getJoinCommunity() async {
