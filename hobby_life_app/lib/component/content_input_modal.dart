@@ -1,12 +1,13 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:hobby_life_app/model/content_model.dart';
 import 'package:hobby_life_app/provider/content_provider.dart';
 
 class ContentInputModal extends ConsumerStatefulWidget {
-  final String? title;
-  final String? detail;
+  final int? communityId;
+  final ContentModel? contentModel;
 
-  const ContentInputModal({Key? key, this.title, this.detail}) : super(key: key);
+  const ContentInputModal({Key? key, this.communityId, this.contentModel}) : super(key: key);
 
   @override
   ConsumerState<ConsumerStatefulWidget> createState() => _ContentInputModalState();
@@ -15,9 +16,16 @@ class ContentInputModal extends ConsumerStatefulWidget {
 class _ContentInputModalState extends ConsumerState<ContentInputModal> {
   final GlobalKey<FormState> formKey = GlobalKey<FormState>();
 
+  String? title;
+  String? detail;
+
   @override
   void initState() {
     super.initState();
+    if(widget.contentModel != null) {
+      title = widget.contentModel?.title ?? '';
+      detail = widget.contentModel?.detail ?? '';
+    }
   }
 
   @override
@@ -44,7 +52,7 @@ class _ContentInputModalState extends ConsumerState<ContentInputModal> {
               ],
             ),
             TextFormField(
-              initialValue: widget.title ?? '',
+              initialValue: title,
               keyboardType: TextInputType.text,
               decoration: const InputDecoration(
                 labelText: '제목',
@@ -56,10 +64,11 @@ class _ContentInputModalState extends ConsumerState<ContentInputModal> {
                 }
                 return null;
               },
+              onSaved: (newValue) => title = newValue!,
             ),
             const SizedBox(height: 10),
             TextFormField(
-              initialValue: widget.detail ?? '',
+              initialValue: detail,
               keyboardType: TextInputType.multiline,
               maxLines: 10,
               decoration: const InputDecoration(
@@ -72,6 +81,7 @@ class _ContentInputModalState extends ConsumerState<ContentInputModal> {
                 }
                 return null;
               },
+              onSaved: (newValue) => detail = newValue!,
             ),
             const SizedBox(height: 10),
             ElevatedButton(
@@ -92,7 +102,23 @@ class _ContentInputModalState extends ConsumerState<ContentInputModal> {
   onSave(BuildContext context) async {
     if (formKey.currentState!.validate()) {
       formKey.currentState!.save();
+
+      if(widget.contentModel != null) {
+        ref.read(contentListProvider(widget.communityId!.toString()).notifier).updateContent(
+          communityId: widget.communityId!.toString(),
+          contentId: widget.contentModel!.contentId.toString(),
+          title: title!,
+          detail: detail!,
+        );
+      } else {
+        ref.read(contentListProvider(widget.communityId!.toString()).notifier).createContent(
+          communityId: '1',
+          title: title!,
+          detail: detail!,
+        );
+      }
     }
+
     Navigator.of(context).pop();
   }
 }

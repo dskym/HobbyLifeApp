@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:hobby_life_app/component/content_input_modal.dart';
+import 'package:hobby_life_app/model/content_model.dart';
 import 'package:hobby_life_app/provider/comment_provider.dart';
 import 'package:hobby_life_app/provider/content_provider.dart';
 
@@ -31,7 +32,7 @@ class _ContentDetailScreenState extends ConsumerState<ContentDetailScreen> {
                 IconButton(
                   icon: const Icon(Icons.edit),
                   onPressed: () {
-                    showContentInputModal(context);
+                    showContentInputModal(context, content);
                   },
                 ),
                 IconButton(
@@ -96,13 +97,13 @@ class _ContentDetailScreenState extends ConsumerState<ContentDetailScreen> {
     );
   }
 
-  void showContentInputModal(BuildContext context) {
+  void showContentInputModal(BuildContext context, ContentModel contentModel) {
     showModalBottomSheet(
       context: context,
       isDismissible: true,
       isScrollControlled: true,
       builder: (context) {
-        return const ContentInputModal();
+        return ContentInputModal(communityId: widget.communityId, contentModel: contentModel);
       },
     );
   }
