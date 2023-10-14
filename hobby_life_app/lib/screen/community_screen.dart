@@ -78,6 +78,7 @@ class _CommunityScreenState extends ConsumerState<CommunityScreen>
       itemCount: communityList.length,
       itemBuilder: (BuildContext context, int index) {
         return CommunityCard(
+          id: communityList[index].communityId,
           title: communityList[index].title,
           description: communityList[index].description,
           category: communityList[index].categoryName,
@@ -92,6 +93,7 @@ class _CommunityScreenState extends ConsumerState<CommunityScreen>
       itemCount: communityList.length,
       itemBuilder: (BuildContext context, int index) {
         return CommunityCard(
+          id: communityList[index].communityId,
           title: communityList[index].title,
           description: communityList[index].description,
           category: communityList[index].categoryName,

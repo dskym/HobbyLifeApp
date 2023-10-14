@@ -25,11 +25,9 @@ class CommunityRepository {
     return CommunityModel.fromJson(commonResponse.data!);
   }
 
-  Future<CommunityModel> deleteCommunity({required String communityId}) async {
+  Future<void> deleteCommunity({required String communityId}) async {
     final response = await _dio.delete('/community/$communityId');
     print("deleteCommunity : ${response.data}");
-    CommonResponseModel<dynamic> commonResponse = CommonResponseModel.fromJson(response.data);
-    return CommunityModel.fromJson(commonResponse.data!);
   }
 
   Future<CommunityModel> updateCommunity({required String communityId, required String title, required String description, required int categoryId}) async {

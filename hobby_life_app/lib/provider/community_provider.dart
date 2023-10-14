@@ -42,7 +42,7 @@ class CommunityList extends _$CommunityList {
     final communityRepository = ref.read(communityRepositoryProvider);
     await communityRepository.deleteCommunity(communityId: id);
     final previousState = await future;
-    state = AsyncData(previousState.where((element) => element.communityId != id).toList());
+    state = AsyncData(previousState.where((element) => element.communityId.toString() != id).toList());
   }
 
   Future<void> updateCommunity({required String id, required String title, required String description, required int categoryId}) async {
