@@ -11,6 +11,7 @@ class CommunityModel with _$CommunityModel {
     required String description,
     required int authorId,
     required String categoryName,
+    required int memberCount,
   }) = _CommunityModel;
 
   factory CommunityModel.fromJson(Map<String, dynamic> json) =>

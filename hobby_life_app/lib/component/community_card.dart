@@ -105,7 +105,7 @@ class CommunityCard extends ConsumerWidget {
                 },
                 transitionDuration: const Duration(milliseconds: 100),
                 pageBuilder: (context, animation, secondaryAnimation) =>
-                    const CommunityDetailScreen(),
+                    CommunityDetailScreen(id),
               ),
             );
           },
