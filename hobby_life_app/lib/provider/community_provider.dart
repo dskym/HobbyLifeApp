@@ -15,8 +15,7 @@ class Community extends _$Community {
 
   Future<void> joinCommunity({required String id}) async {
     final communityRepository = ref.read(communityRepositoryProvider);
-    final communityModel = await communityRepository.joinCommunity(communityId: id);
-    state = AsyncData(communityModel);
+    await communityRepository.joinCommunity(communityId: id);
   }
 
   Future<void> leaveCommunity({required String id}) async {

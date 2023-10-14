@@ -5,14 +5,14 @@ import 'package:hobby_life_app/component/content_input_modal.dart';
 import 'package:hobby_life_app/provider/community_provider.dart';
 import 'package:hobby_life_app/provider/content_provider.dart';
 
-
 class CommunityDetailScreen extends ConsumerStatefulWidget {
   final int id;
 
   const CommunityDetailScreen(this.id, {Key? key}) : super(key: key);
 
   @override
-  ConsumerState<ConsumerStatefulWidget> createState() => _CommunityDetailScreenState();
+  ConsumerState<ConsumerStatefulWidget> createState() =>
+      _CommunityDetailScreenState();
 }
 
 class _CommunityDetailScreenState extends ConsumerState<CommunityDetailScreen> {
@@ -26,6 +26,28 @@ class _CommunityDetailScreenState extends ConsumerState<CommunityDetailScreen> {
           return Scaffold(
               appBar: AppBar(
                 title: Text(community.title),
+                centerTitle: true,
+                actions: [
+                  community.isJoin
+                      ? IconButton(
+                          onPressed: () {
+                            ref
+                                .read(communityProvider(widget.id.toString())
+                                    .notifier)
+                                .leaveCommunity(id: widget.id.toString());
+                          },
+                          icon: const Text('탈퇴'),
+                        )
+                      : IconButton(
+                          onPressed: () {
+                            ref
+                                .read(communityProvider(widget.id.toString())
+                                    .notifier)
+                                .joinCommunity(id: widget.id.toString());
+                          },
+                          icon: const Text('가입'),
+                        ),
+                ],
               ),
               body: Container(
                 padding: const EdgeInsets.all(20),
@@ -52,7 +74,8 @@ class _CommunityDetailScreenState extends ConsumerState<CommunityDetailScreen> {
                             },
                           );
                         } else {
-                          return const Center(child: CircularProgressIndicator());
+                          return const Center(
+                              child: CircularProgressIndicator());
                         }
                       },
                     ),
@@ -65,8 +88,7 @@ class _CommunityDetailScreenState extends ConsumerState<CommunityDetailScreen> {
                 shape: const CircleBorder(),
                 onPressed: () => showContentInputModal(context),
                 child: const Icon(Icons.add),
-              )
-          );
+              ));
         } else {
           return const Center(child: CircularProgressIndicator());
         }
