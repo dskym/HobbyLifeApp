@@ -63,4 +63,16 @@ class ChatroomList extends _$ChatroomList {
     final previousState = await future;
     state = AsyncData([...previousState, chatroomModel]);
   }
+
+  Future<void> getAllChatroom() async {
+    final chatroomRepository = ref.read(chatroomRepositoryProvider);
+    final chatroomModel = await chatroomRepository.getAllChatroom();
+    state = AsyncData(chatroomModel);
+  }
+
+  Future<void> getJoinChatroom() async {
+    final chatroomRepository = ref.read(chatroomRepositoryProvider);
+    final chatroomModel = await chatroomRepository.getJoinChatroom();
+    state = AsyncData(chatroomModel);
+  }
 }
