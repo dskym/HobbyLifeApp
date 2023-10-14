@@ -82,7 +82,7 @@ class _CommunityScreenState extends ConsumerState<CommunityScreen>
           title: communityList[index].title,
           description: communityList[index].description,
           category: communityList[index].categoryName,
-          memberCount: 10,
+          memberCount: communityList[index].memberCount,
         );
       },
     );
@@ -97,7 +97,7 @@ class _CommunityScreenState extends ConsumerState<CommunityScreen>
           title: communityList[index].title,
           description: communityList[index].description,
           category: communityList[index].categoryName,
-          memberCount: 10,
+          memberCount: communityList[index].memberCount,
         );
       },
     );
