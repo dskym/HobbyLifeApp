@@ -7,26 +7,35 @@ part 'comment_provider.g.dart';
 final commentRepositoryProvider = Provider<CommentRepository>((ref) => CommentRepository());
 
 @riverpod
-class Comment extends _$Comment {
+class CommentList extends _$CommentList {
   @override
-  Future<CommentModel> build(String communityId, String contentId) async {
-    return ref.read(commentRepositoryProvider).getComment(communityId: communityId, contentId: contentId);
+  Future<List<CommentModel>> build(String communityId, String contentId) async {
+    return ref.read(commentRepositoryProvider).getAllComment(communityId: communityId, contentId: contentId);
   }
 
-  Future<void> createComment({required String communityId, required String contentId, required String detail, required int originCommentId}) async {
+  Future<void> createComment({required String communityId, required String contentId, required String detail, required int? originCommentId}) async {
     final commentRepository = ref.read(commentRepositoryProvider);
     final commentModel = await commentRepository.createComment(communityId: communityId, contentId: contentId, detail: detail, originCommentId: originCommentId);
-    state = AsyncData(commentModel);
+    final previousState = await future;
+    state = AsyncData([...previousState, commentModel]);
   }
 
   Future<void> deleteComment({required String communityId, required String contentId, required String commentId}) async {
     final commentRepository = ref.read(commentRepositoryProvider);
     await commentRepository.deleteComment(communityId: communityId, contentId: contentId, commentId: commentId);
+    final previousState = await future;
+    state = AsyncData(previousState.where((element) => element.commentId.toString() != commentId).toList());
   }
 
   Future<void> updateComment({required String communityId, required String contentId, required String commentId, required String detail, required int originCommentId}) async {
     final commentRepository = ref.read(commentRepositoryProvider);
     final commentModel = await commentRepository.updateComment(communityId: communityId, contentId: contentId, commentId: commentId, detail: detail, originCommentId: originCommentId);
-    state = AsyncData(commentModel);
+    final previousState = await future;
+    state = AsyncData(previousState.map((element) {
+      if (element.commentId.toString() == commentId) {
+        return element.copyWith(detail: detail);
+      }
+      return element;
+    }).toList());
   }
 }
