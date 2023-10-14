@@ -57,6 +57,12 @@ class CommunityList extends _$CommunityList {
     }).toList());
   }
 
+  Future<void> getAllCommunity() async {
+    final communityRepository = ref.read(communityRepositoryProvider);
+    final communityModel = await communityRepository.getAllCommunity();
+    state = AsyncData(communityModel);
+  }
+
   Future<void> joinCommunity() async {
     final communityRepository = ref.read(communityRepositoryProvider);
     final communityModel = await communityRepository.getJoinCommunity();

@@ -1,6 +1,9 @@
+import 'dart:collection';
+
 import 'package:dio/dio.dart';
 import 'package:hobby_life_app/model/common_response_model.dart';
 import 'package:hobby_life_app/model/hobby_history_model.dart';
+import 'package:intl/intl.dart';
 
 class HobbyHistoryRepository {
   final _dio = Dio(BaseOptions(
@@ -10,15 +13,23 @@ class HobbyHistoryRepository {
     headers: {
       'Content-Type': 'application/json',
       'Accept': 'application/json',
-      'Authorization': 'Bearer eyJhbGciOiJIUzUxMiJ9.eyJzdWIiOiIyOSIsImV4cCI6MTY5NzIxNjgzMH0.Bg2R5wfY7izCl61hiXlKExZGRDOhCAmL7doOlTGvDjqIsPg0SRhLjwPGY-d1uDjoeI5A0KMoYsx_J31vIkwqMA',
+      'Authorization': 'Bearer eyJhbGciOiJIUzUxMiJ9.eyJzdWIiOiIxIiwiZXhwIjoxNjk3MzA5MzUwfQ.e-Huq6mP1Jw4RXL0jQVd3LEiz1QL7NC5VFFFZ75LZygk48Ici1phNkuFZ8g1gyXhK-jtBD1t9lzaXX0kJF3p6Q',
     },
   ));
 
-  Future<List<HobbyHistoryModel>> getAllHobbyHistory() async {
-    final response = await _dio.get('/hobby/history');
+  Future<Map<String, List<HobbyHistoryModel>>> getAllHobbyHistory(DateTime now) async {
+    final response = await _dio.get('/hobby/history', queryParameters: {
+      'startDate': DateFormat('yyyy-MM-dd').format(DateTime(now.year, now.month, 1)),
+      'endDate': DateFormat('yyyy-MM-dd').format(DateTime(now.year, now.month + 1, 0)),
+    });
+
     print("getAllHobbyHistory : ${response.data}");
     CommonResponseModel<dynamic> commonResponse = CommonResponseModel.fromJson(response.data);
-    return List.from(commonResponse.data?.map((e) => HobbyHistoryModel.fromJson(e)) ?? []);
+    LinkedHashMap<String, List<HobbyHistoryModel>> result = LinkedHashMap();
+    commonResponse.data!.forEach((key, value) {
+      result[key] = List.from(value.map((e) => HobbyHistoryModel.fromJson(e)));
+    });
+    return result;
   }
 
   Future<HobbyHistoryModel> addHobbyHistory({required int hobbyId, required int score, required int cost, required DateTime hobbyDate}) async {

@@ -7,7 +7,7 @@ class ChatroomScreen extends StatefulWidget {
   const ChatroomScreen({super.key, required this.name});
 
   @override
-  _ChatroomScreenState createState() => _ChatroomScreenState();
+  State<ChatroomScreen> createState() => _ChatroomScreenState();
 }
 
 class _ChatroomScreenState extends State<ChatroomScreen> {
