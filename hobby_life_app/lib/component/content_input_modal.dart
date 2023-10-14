@@ -3,7 +3,10 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:hobby_life_app/provider/content_provider.dart';
 
 class ContentInputModal extends ConsumerStatefulWidget {
-  const ContentInputModal({Key? key}) : super(key: key);
+  final String? title;
+  final String? detail;
+
+  const ContentInputModal({Key? key, this.title, this.detail}) : super(key: key);
 
   @override
   ConsumerState<ConsumerStatefulWidget> createState() => _ContentInputModalState();
@@ -11,9 +14,6 @@ class ContentInputModal extends ConsumerStatefulWidget {
 
 class _ContentInputModalState extends ConsumerState<ContentInputModal> {
   final GlobalKey<FormState> formKey = GlobalKey<FormState>();
-
-  String title = '';
-  String detail = '';
 
   @override
   void initState() {
@@ -44,7 +44,7 @@ class _ContentInputModalState extends ConsumerState<ContentInputModal> {
               ],
             ),
             TextFormField(
-              initialValue: title,
+              initialValue: widget.title ?? '',
               keyboardType: TextInputType.text,
               decoration: const InputDecoration(
                 labelText: '제목',
@@ -56,11 +56,10 @@ class _ContentInputModalState extends ConsumerState<ContentInputModal> {
                 }
                 return null;
               },
-              onSaved: (newValue) => title = newValue!,
             ),
             const SizedBox(height: 10),
             TextFormField(
-              initialValue: detail,
+              initialValue: widget.detail ?? '',
               keyboardType: TextInputType.multiline,
               maxLines: 10,
               decoration: const InputDecoration(
@@ -73,7 +72,6 @@ class _ContentInputModalState extends ConsumerState<ContentInputModal> {
                 }
                 return null;
               },
-              onSaved: (newValue) => detail = newValue!,
             ),
             const SizedBox(height: 10),
             ElevatedButton(
@@ -94,9 +92,6 @@ class _ContentInputModalState extends ConsumerState<ContentInputModal> {
   onSave(BuildContext context) async {
     if (formKey.currentState!.validate()) {
       formKey.currentState!.save();
-
-      ref.read(contentListProvider('1').notifier)
-          .createContent(communityId: '1', title: title, detail: detail);
     }
     Navigator.of(context).pop();
   }
