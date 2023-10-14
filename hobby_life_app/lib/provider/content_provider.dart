@@ -7,6 +7,14 @@ part 'content_provider.g.dart';
 final contentRepositoryProvider = Provider<ContentRepository>((ref) => ContentRepository());
 
 @riverpod
+class Content extends _$Content {
+  @override
+  Future<ContentModel> build(String communityId, String contentId) async {
+    return ref.read(contentRepositoryProvider).getContent(communityId: communityId, contentId: contentId);
+  }
+}
+
+@riverpod
 class ContentList extends _$ContentList {
   @override
   Future<List<ContentModel>> build(String communityId) async {
