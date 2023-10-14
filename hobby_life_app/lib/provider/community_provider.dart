@@ -32,8 +32,8 @@ class CommunityList extends _$CommunityList {
     return ref.read(communityRepositoryProvider).getAllCommunity();
   }
 
-  Future<void> createCommunity({required String title, required String description, required int hobbyId}) async {
-    final communityModel = await ref.read(communityRepositoryProvider).createCommunity(title: title, description: description, hobbyId: hobbyId);
+  Future<void> createCommunity({required String title, required String description, required int categoryId}) async {
+    final communityModel = await ref.read(communityRepositoryProvider).createCommunity(title: title, description: description, categoryId: categoryId);
     final previousState = await future;
     state = AsyncData([...previousState, communityModel]);
   }
@@ -45,13 +45,13 @@ class CommunityList extends _$CommunityList {
     state = AsyncData(previousState.where((element) => element.communityId != id).toList());
   }
 
-  Future<void> updateCommunity({required String id, required String title, required String description, required int hobbyId}) async {
+  Future<void> updateCommunity({required String id, required String title, required String description, required int categoryId}) async {
     final communityRepository = ref.read(communityRepositoryProvider);
-    await communityRepository.updateCommunity(communityId: id, title: title, description: description, hobbyId: hobbyId);
+    final communityModel = await communityRepository.updateCommunity(communityId: id, title: title, description: description, categoryId: categoryId);
     final previousState = await future;
     state = AsyncData(previousState.map((element) {
       if (element.communityId.toString() == id) {
-        return element.copyWith(title: title, description: description, hobbyId: hobbyId);
+        return element.copyWith(title: title, description: description, categoryName: communityModel.categoryName);
       }
       return element;
     }).toList());

@@ -10,7 +10,7 @@ class CommunityModel with _$CommunityModel {
     required String title,
     required String description,
     required int authorId,
-    required int hobbyId,
+    required String categoryName,
   }) = _CommunityModel;
 
   factory CommunityModel.fromJson(Map<String, dynamic> json) =>
