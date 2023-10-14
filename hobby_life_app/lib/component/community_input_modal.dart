@@ -1,11 +1,14 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:hobby_life_app/model/category_model.dart';
+import 'package:hobby_life_app/model/community_model.dart';
 import 'package:hobby_life_app/provider/category_provider.dart';
 import 'package:hobby_life_app/provider/community_provider.dart';
 
 class CommunityInputModal extends ConsumerStatefulWidget {
-  const CommunityInputModal({Key? key}) : super(key: key);
+  final CommunityModel? communityModel;
+
+  const CommunityInputModal({Key? key, this.communityModel}) : super(key: key);
 
   @override
   ConsumerState<ConsumerStatefulWidget> createState() =>
@@ -15,13 +18,19 @@ class CommunityInputModal extends ConsumerStatefulWidget {
 class _CommunityInputModalState extends ConsumerState<CommunityInputModal> {
   final GlobalKey<FormState> formKey = GlobalKey<FormState>();
 
-  String title = '';
-  String description = '';
-  int categoryId = 0;
+  String? title;
+  String? description;
+  String? categoryName;
+  int? categoryId;
 
   @override
   void initState() {
     super.initState();
+    if(widget.communityModel != null) {
+      title = widget.communityModel?.title ?? '';
+      description = widget.communityModel?.description ?? '';
+      categoryName = widget.communityModel?.categoryName ?? '';
+    }
   }
 
   @override
@@ -85,6 +94,7 @@ class _CommunityInputModalState extends ConsumerState<CommunityInputModal> {
               builder: (BuildContext context, AsyncSnapshot snapshot) {
                 if (snapshot.hasData) {
                   return DropdownButtonFormField<CategoryModel>(
+                    value: snapshot.data.firstWhere((element) => element.name == categoryName),
                     hint: const Text('커뮤니티 카테고리를 선택해주세요.'),
                     items: snapshot.data
                         .map<DropdownMenuItem<CategoryModel>>(
@@ -120,9 +130,14 @@ class _CommunityInputModalState extends ConsumerState<CommunityInputModal> {
     if (formKey.currentState!.validate()) {
       formKey.currentState!.save();
 
-      ref
-          .read(communityListProvider.notifier)
-          .createCommunity(title: title, description: description, categoryId: categoryId);
+      if(widget.communityModel == null) {
+        ref
+            .read(communityListProvider.notifier)
+            .createCommunity(title: title!, description: description!, categoryId: categoryId!);
+      } else {
+        ref.read(communityListProvider.notifier)
+            .updateCommunity(id: widget.communityModel!.communityId.toString(), title: title!, description: description!, categoryId: categoryId!);
+      }
     }
     Navigator.of(context).pop();
   }

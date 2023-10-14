@@ -1,7 +1,9 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:hobby_life_app/component/community_input_modal.dart';
 import 'package:hobby_life_app/component/content_card.dart';
 import 'package:hobby_life_app/component/content_input_modal.dart';
+import 'package:hobby_life_app/model/community_model.dart';
 import 'package:hobby_life_app/provider/community_provider.dart';
 import 'package:hobby_life_app/provider/content_provider.dart';
 
@@ -28,6 +30,11 @@ class _CommunityDetailScreenState extends ConsumerState<CommunityDetailScreen> {
                 title: Text(community.title),
                 centerTitle: true,
                 actions: [
+                  //TODO:  매니저만 보이도록 수정 필요
+                  IconButton(
+                    onPressed: () => showCommunityInputModal(context, community),
+                    icon: const Text('수정')
+                  ),
                   community.isJoin
                       ? IconButton(
                           onPressed: () {
@@ -94,6 +101,17 @@ class _CommunityDetailScreenState extends ConsumerState<CommunityDetailScreen> {
         } else {
           return const Center(child: CircularProgressIndicator());
         }
+      },
+    );
+  }
+
+  void showCommunityInputModal(BuildContext context, CommunityModel communityModel) {
+    showModalBottomSheet(
+      context: context,
+      isDismissible: true,
+      isScrollControlled: true,
+      builder: (context) {
+        return CommunityInputModal(communityModel: communityModel);
       },
     );
   }
