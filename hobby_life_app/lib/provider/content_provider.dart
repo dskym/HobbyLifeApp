@@ -12,19 +12,12 @@ class ContentList extends _$ContentList {
   Future<List<ContentModel>> build(String communityId) async {
     return ref.read(contentRepositoryProvider).getAllContent(communityId: communityId);
   }
-}
-
-@riverpod
-class Content extends _$Content {
-  @override
-  Future<ContentModel> build(String communityId, String contentId) async {
-    return ref.read(contentRepositoryProvider).getContent(communityId: communityId, contentId: contentId);
-  }
 
   Future<void> createContent({required String communityId, required String title, required String detail}) async {
     final contentRepository = ref.read(contentRepositoryProvider);
     final contentModel = await contentRepository.createContent(communityId: communityId, title: title, detail: detail);
-    state = AsyncData(contentModel);
+    final previousState = await future;
+    state = AsyncData([...previousState, contentModel]);
   }
 
   Future<void> deleteContent({required String communityId, required String contentId}) async {
@@ -35,6 +28,12 @@ class Content extends _$Content {
   Future<void> updateContent({required String communityId, required String contentId, required String title, required String detail}) async {
     final contentRepository = ref.read(contentRepositoryProvider);
     final contentModel = await contentRepository.updateContent(communityId: communityId, contentId: contentId, title: title, detail: detail);
-    state = AsyncData(contentModel);
+    final previousState = await future;
+    state = AsyncData(previousState.map((element) {
+      if (element.contentId.toString() == contentId) {
+        return element.copyWith(title: title, detail: detail);
+      }
+      return element;
+    }).toList());
   }
 }

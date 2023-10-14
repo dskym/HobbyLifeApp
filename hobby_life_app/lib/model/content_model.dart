@@ -6,11 +6,10 @@ part 'content_model.g.dart';
 @freezed
 class ContentModel with _$ContentModel {
   factory ContentModel({
-    required String contentId,
+    required int contentId,
     required String title,
-    required String description,
-    required int authorId,
-    required int communityId,
+    required String detail,
+    required String authorName,
   }) = _ContentModel;
 
   factory ContentModel.fromJson(Map<String, dynamic> json) =>
