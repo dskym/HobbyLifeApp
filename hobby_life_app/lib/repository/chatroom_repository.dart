@@ -56,11 +56,14 @@ class ChatroomRepository {
     return List.from(commonResponse.data?.map((e) => ChatroomModel.fromJson(e)) ?? []);
   }
 
-  Future<ChatroomModel> joinChatroom({required int chatroomId}) async {
-    final response = await _dio.post('/chatroom/$chatroomId');
+  Future<void> joinChatroom({required int chatroomId}) async {
+    final response = await _dio.post('/chatroom/$chatroomId/join');
     print("joinChatroom : ${response.data}");
-    CommonResponseModel<dynamic> commonResponse = CommonResponseModel.fromJson(response.data);
-    return ChatroomModel.fromJson(commonResponse.data!);
+  }
+
+  Future<void> leaveChatroom({required int chatroomId}) async {
+    final response = await _dio.delete('/chatroom/$chatroomId/leave');
+    print("leaveChatroom");
   }
 
   Future<List<ChatroomModel>> getJoinChatroom() async {

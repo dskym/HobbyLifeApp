@@ -43,12 +43,27 @@ class _HobbyHistoryInputModalState
             Row(
               children: [
                 IconButton(
-                  icon: const Icon(Icons.close),
+                  icon: const Icon(Icons.keyboard_arrow_left_outlined),
                   onPressed: () => goBackScreen(context),
                 ),
                 const SizedBox(width: 10),
-                const Text('취미 이력'),
+                const Text('취미 활동 기록'),
               ],
+            ),
+            TextFormField(
+              initialValue: hobbyName,
+              keyboardType: TextInputType.text,
+              decoration: const InputDecoration(
+                labelText: '이름',
+                hintText: '취미 이름을 입력해주세요.',
+              ),
+              validator: (String? value) {
+                if (value == null || value.isEmpty) {
+                  return '취미 이름을 입력해주세요.';
+                }
+                return null;
+              },
+              onSaved: (newValue) => hobbyName = newValue!,
             ),
             TextFormField(
               initialValue: hobbyDate,
@@ -64,21 +79,6 @@ class _HobbyHistoryInputModalState
                 return null;
               },
               onSaved: (newValue) => hobbyDate = newValue!,
-            ),
-            TextFormField(
-              initialValue: hobbyName,
-              keyboardType: TextInputType.text,
-              decoration: const InputDecoration(
-                labelText: '취미 이름',
-                hintText: '취미 이름을 입력해주세요.',
-              ),
-              validator: (String? value) {
-                if (value == null || value.isEmpty) {
-                  return '취미 이름을 입력해주세요.';
-                }
-                return null;
-              },
-              onSaved: (newValue) => hobbyName = newValue!,
             ),
             TextFormField(
               initialValue: categoryName,

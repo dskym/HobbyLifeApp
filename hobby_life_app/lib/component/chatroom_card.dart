@@ -2,12 +2,14 @@ import 'package:flutter/material.dart';
 import 'package:hobby_life_app/screen/chatroom_screen.dart';
 
 class ChatroomCard extends StatelessWidget {
+  final int chatroomId;
   final String name;
   final String description;
   final DateTime lastMessageTime;
 
   const ChatroomCard(
       {Key? key,
+      required this.chatroomId,
       required this.name,
       required this.description,
       required this.lastMessageTime})
@@ -42,6 +44,7 @@ class ChatroomCard extends StatelessWidget {
               transitionDuration: const Duration(milliseconds: 100),
               pageBuilder: (context, animation, secondaryAnimation) =>
                   ChatroomScreen(
+                id: chatroomId,
                 name: name,
               ),
             ),

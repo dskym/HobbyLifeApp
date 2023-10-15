@@ -1,17 +1,21 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:hobby_life_app/component/chat_message.dart';
+import 'package:hobby_life_app/model/user_model.dart';
+import 'package:hobby_life_app/provider/chatroom_provider.dart';
 
-class ChatroomScreen extends StatefulWidget {
+class ChatroomScreen extends ConsumerStatefulWidget {
+  final int id;
   final String name;
 
-  const ChatroomScreen({super.key, required this.name});
+  const ChatroomScreen({super.key, required this.id, required this.name});
 
   @override
-  State<ChatroomScreen> createState() => _ChatroomScreenState();
+  ConsumerState<ConsumerStatefulWidget> createState() => _ChatroomScreenState();
 }
 
-class _ChatroomScreenState extends State<ChatroomScreen> {
-  ScrollController _scrollController = ScrollController();
+class _ChatroomScreenState extends ConsumerState<ChatroomScreen> {
+  final ScrollController _scrollController = ScrollController();
 
   List<ChatMessage> messages = <ChatMessage>[
     ChatMessage(
@@ -110,23 +114,32 @@ class _ChatroomScreenState extends State<ChatroomScreen> {
         child: ListView(
           children: [
             const Text('채팅방 참여 멤버'),
-            ListTile(
-              title: const Text('Item 1'),
-              onTap: () {
-                print('Item 1 is clicked');
+            FutureBuilder(
+              future: ref.watch(chatroomMemberListProvider(widget.id).future),
+              builder: (BuildContext context, AsyncSnapshot snapshot) {
+                if (snapshot.hasData) {
+                  return ListView.builder(
+                    shrinkWrap: true,
+                    itemCount: snapshot.data.length,
+                    itemBuilder: (BuildContext context, int index) {
+                      return ListTile(
+                        title: Text(snapshot.data[index].name),
+                        onTap: () {
+                          print('Item 1 is clicked');
+                        },
+                      );
+                    },
+                  );
+                } else {
+                  return const Center(child: CircularProgressIndicator());
+                }
               },
             ),
-            ListTile(
-              title: const Text('Item 2'),
-              onTap: () {
-                print('Item 2 is clicked');
+            ElevatedButton(
+              onPressed: () {
+                ref.read(chatroomProvider(widget.id).notifier).leaveChatroom(id: widget.id);
               },
-            ),
-            ListTile(
-              title: const Text('Item 3'),
-              onTap: () {
-                print('Item 3 is clicked');
-              },
+              child: Text('나가기'),
             ),
           ],
         ),
