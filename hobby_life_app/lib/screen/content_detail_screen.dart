@@ -1,6 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:hobby_life_app/component/comment_card.dart';
 import 'package:hobby_life_app/component/content_input_modal.dart';
+import 'package:hobby_life_app/model/comment_model.dart';
 import 'package:hobby_life_app/model/content_model.dart';
 import 'package:hobby_life_app/provider/comment_provider.dart';
 import 'package:hobby_life_app/provider/content_provider.dart';
@@ -9,7 +11,8 @@ class ContentDetailScreen extends ConsumerStatefulWidget {
   final int communityId;
   final int contentId;
 
-  const ContentDetailScreen(this.communityId, this.contentId, {Key? key}) : super(key: key);
+  const ContentDetailScreen(this.communityId, this.contentId, {Key? key})
+      : super(key: key);
 
   @override
   ConsumerState<ConsumerStatefulWidget> createState() =>
@@ -20,7 +23,9 @@ class _ContentDetailScreenState extends ConsumerState<ContentDetailScreen> {
   @override
   Widget build(BuildContext context) {
     return FutureBuilder(
-      future: ref.watch(contentProvider(widget.communityId.toString(), widget.contentId.toString()).future),
+      future: ref.watch(contentProvider(
+              widget.communityId.toString(), widget.contentId.toString())
+          .future),
       builder: (BuildContext context, AsyncSnapshot snapshot) {
         if (snapshot.hasData) {
           final content = snapshot.data;
@@ -38,7 +43,12 @@ class _ContentDetailScreenState extends ConsumerState<ContentDetailScreen> {
                 IconButton(
                   icon: const Icon(Icons.delete),
                   onPressed: () {
-                    ref.read(contentListProvider(widget.communityId.toString()).notifier).deleteContent(communityId: widget.communityId.toString(), contentId: widget.contentId.toString());
+                    ref
+                        .read(contentListProvider(widget.communityId.toString())
+                            .notifier)
+                        .deleteContent(
+                            communityId: widget.communityId.toString(),
+                            contentId: widget.contentId.toString());
                   },
                 ),
               ],
@@ -64,31 +74,39 @@ class _ContentDetailScreenState extends ConsumerState<ContentDetailScreen> {
                             shrinkWrap: true,
                             itemCount: snapshot.data.length,
                             itemBuilder: (BuildContext context, int index) {
-                              return ListTile(
-                                title: Text(snapshot.data[index].detail),
-                                subtitle: Text(snapshot.data[index].authorName),
-                                trailing: Text(snapshot.data[index].lastModified.toString()),
-                              );
+                              final CommentModel comment = snapshot.data[index];
+                              return CommentCard(
+                                  commentId: comment.commentId,
+                                  detail: comment.detail,
+                                  authorName: comment.authorName,
+                                  lastModified: comment.lastModified);
                             },
                           );
                         } else {
-                          return const Center(child: CircularProgressIndicator());
+                          return const Center(
+                              child: CircularProgressIndicator());
                         }
-                      },
-                    ),
-                    TextField(
-                      decoration: const InputDecoration(
-                        border: OutlineInputBorder(),
-                        labelText: '댓글 입력',
-                      ),
-                      onSubmitted: (String value) {
-                        ref.read(commentListProvider('1', '2').notifier).createComment(communityId: '1', contentId: '2', detail: value, originCommentId: null);
                       },
                     ),
                   ],
                 ),
               ),
             ),
+            bottomSheet: TextField(
+              decoration: const InputDecoration(
+                border: OutlineInputBorder(),
+                labelText: '댓글 입력',
+              ),
+              onSubmitted: (String value) {
+                ref
+                    .read(commentListProvider(widget.communityId.toString(), widget.contentId.toString()).notifier)
+                    .createComment(
+                        communityId: widget.communityId.toString(),
+                        contentId: widget.contentId.toString(),
+                        detail: value,
+                        originCommentId: null);
+              },
+            )
           );
         } else {
           return const Center(child: CircularProgressIndicator());
@@ -103,7 +121,8 @@ class _ContentDetailScreenState extends ConsumerState<ContentDetailScreen> {
       isDismissible: true,
       isScrollControlled: true,
       builder: (context) {
-        return ContentInputModal(communityId: widget.communityId, contentModel: contentModel);
+        return ContentInputModal(
+            communityId: widget.communityId, contentModel: contentModel);
       },
     );
   }

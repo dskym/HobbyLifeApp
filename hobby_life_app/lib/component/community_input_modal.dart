@@ -89,12 +89,12 @@ class _CommunityInputModalState extends ConsumerState<CommunityInputModal> {
               onSaved: (newValue) => description = newValue!,
             ),
             const SizedBox(height: 10),
-            FutureBuilder(
+            FutureBuilder<List<CategoryModel>>(
               future: ref.read(categoryListProvider.future),
               builder: (BuildContext context, AsyncSnapshot snapshot) {
                 if (snapshot.hasData) {
                   return DropdownButtonFormField<CategoryModel>(
-                    value: snapshot.data.firstWhere((element) => element.name == categoryName),
+                    value: null,
                     hint: const Text('커뮤니티 카테고리를 선택해주세요.'),
                     items: snapshot.data
                         .map<DropdownMenuItem<CategoryModel>>(
