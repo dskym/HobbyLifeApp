@@ -1,6 +1,7 @@
 import 'package:dio/dio.dart';
 import 'package:hobby_life_app/model/common_response_model.dart';
 import 'package:hobby_life_app/model/user_auth_model.dart';
+import 'package:hobby_life_app/model/user_model.dart';
 
 class UserRepository {
   final _dio = Dio(BaseOptions(
@@ -10,9 +11,16 @@ class UserRepository {
     headers: {
       'Content-Type': 'application/json',
       'Accept': 'application/json',
-      'Authorization': 'Bearer eyJhbGciOiJIUzUxMiJ9.eyJzdWIiOiIyIiwiZXhwIjoxNjk3MzUxNDM3fQ.TCkhPqFy9V5KwWUV_knZK52d-eW3i1ifgiHpRQDPU6G7A2t3ZUXexU9-6m9fK8ZMkcy1gl03FDleJ7m0mPH1_Q',
+      'Authorization': 'Bearer eyJhbGciOiJIUzUxMiJ9.eyJzdWIiOiIyIiwiZXhwIjoxNjk3NDM4NzU4fQ.KaQTyehMvZx-0ep8MkMjonObcBkBorKA0kOnLrsyubKM9OXoqqlYYX-vH65b-fUt8CIqAyXprEudWJLHUrBY9g',
     },
   ));
+
+  Future<UserModel> getUser() async {
+    final response = await _dio.get('/user');
+    print("getUser : ${response.data}");
+    CommonResponseModel<dynamic> commonResponse = CommonResponseModel.fromJson(response.data);
+    return UserModel.fromJson(commonResponse.data!);
+  }
 
   Future<UserAuthModel> registerUser({required String email, required String password, required String name}) async {
     final response = await _dio.post('/user', data: {

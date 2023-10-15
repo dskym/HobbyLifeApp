@@ -21,7 +21,7 @@ class Chatroom extends _$Chatroom {
 
   Future<void> leaveChatroom({required int id}) async {
     final chatroomRepository = ref.read(chatroomRepositoryProvider);
-    await chatroomRepository.joinChatroom(chatroomId: id);
+    await chatroomRepository.leaveChatroom(chatroomId: id);
   }
 }
 
