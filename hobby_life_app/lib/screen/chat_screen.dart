@@ -78,6 +78,7 @@ class _ChatScreenState extends ConsumerState<ChatScreen> with TickerProviderStat
       itemCount: chatroomList.length,
       itemBuilder: (BuildContext context, int index) {
         return ChatroomCard(
+          chatroomId: chatroomList[index].chatroomId,
           name: chatroomList[index].name,
           description: chatroomList[index].description,
           lastMessageTime: DateTime.now(),
@@ -91,6 +92,7 @@ class _ChatScreenState extends ConsumerState<ChatScreen> with TickerProviderStat
       itemCount: chatroomList.length,
       itemBuilder: (BuildContext context, int index) {
         return ChatroomCard(
+          chatroomId: chatroomList[index].chatroomId,
           name: chatroomList[index].name,
           description: chatroomList[index].description,
           lastMessageTime: DateTime.now(),

@@ -13,6 +13,16 @@ class Chatroom extends _$Chatroom {
   Future<ChatroomModel> build(int chatroomId) async {
     return ref.read(chatroomRepositoryProvider).getChatroom(chatroomId: chatroomId);
   }
+
+  Future<void> joinChatroom({required int id}) async {
+    final chatroomRepository = ref.read(chatroomRepositoryProvider);
+    await chatroomRepository.joinChatroom(chatroomId: id);
+  }
+
+  Future<void> leaveChatroom({required int id}) async {
+    final chatroomRepository = ref.read(chatroomRepositoryProvider);
+    await chatroomRepository.joinChatroom(chatroomId: id);
+  }
 }
 
 
@@ -57,12 +67,6 @@ class ChatroomList extends _$ChatroomList {
     }).toList());
   }
 
-  Future<void> joinChatroom({required int id}) async {
-    final chatroomRepository = ref.read(chatroomRepositoryProvider);
-    final chatroomModel = await chatroomRepository.joinChatroom(chatroomId: id);
-    final previousState = await future;
-    state = AsyncData([...previousState, chatroomModel]);
-  }
 
   Future<void> getAllChatroom() async {
     final chatroomRepository = ref.read(chatroomRepositoryProvider);

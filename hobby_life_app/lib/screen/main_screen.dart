@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:hobby_life_app/component/chatroom_input_modal.dart';
 import 'package:hobby_life_app/component/community_input_modal.dart';
 import 'package:hobby_life_app/component/hobby_history_input_modal.dart';
 import 'package:hobby_life_app/screen/setting_screen.dart';
@@ -69,7 +70,7 @@ class _MainScreenState extends State<MainScreen> {
           });
         },
       ),
-      floatingActionButton: _selectedIndex == 0 || _selectedIndex == 1
+      floatingActionButton: _selectedIndex == 0 || _selectedIndex == 1 || _selectedIndex == 2
           ? FloatingActionButton(
               backgroundColor: Colors.blue,
               foregroundColor: Colors.white,
@@ -113,6 +114,9 @@ class _MainScreenState extends State<MainScreen> {
       case 1:
         showCommunityInputModal(context);
         break;
+      case 2:
+        showChatroomInputModal(context);
+        break;
       default:
         break;
     }
@@ -136,6 +140,17 @@ class _MainScreenState extends State<MainScreen> {
       isScrollControlled: true,
       builder: (context) {
         return const CommunityInputModal();
+      },
+    );
+  }
+
+  void showChatroomInputModal(BuildContext context) {
+    showModalBottomSheet(
+      context: context,
+      isDismissible: true,
+      isScrollControlled: true,
+      builder: (context) {
+        return const ChatroomInputModal();
       },
     );
   }
