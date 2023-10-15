@@ -13,4 +13,9 @@ class Chat extends _$Chat {
   Future<List<ChatMessageModel>> build(int chatroomId) async {
     return ref.read(chatRepositoryProvider).getChatMessages(chatroomId);
   }
+
+  Future<void> addMessage(ChatMessageModel chatMessageModel) async {
+    final previousState = await future;
+    state = AsyncData([...previousState, chatMessageModel]);
+  }
 }
