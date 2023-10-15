@@ -55,6 +55,7 @@ class _ContentInputModalState extends ConsumerState<ContentInputModal> {
               initialValue: title,
               keyboardType: TextInputType.text,
               decoration: const InputDecoration(
+                border: OutlineInputBorder(),
                 labelText: '제목',
                 hintText: '글 제목을 입력해주세요.',
               ),
@@ -72,6 +73,7 @@ class _ContentInputModalState extends ConsumerState<ContentInputModal> {
               keyboardType: TextInputType.multiline,
               maxLines: 10,
               decoration: const InputDecoration(
+                border: OutlineInputBorder(),
                 labelText: '내용',
                 hintText: '글 내용을 입력해주세요.',
               ),

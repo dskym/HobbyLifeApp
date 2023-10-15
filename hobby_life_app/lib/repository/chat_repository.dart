@@ -1,8 +1,8 @@
 import 'package:dio/dio.dart';
+import 'package:hobby_life_app/model/chat_message_model.dart';
 import 'package:hobby_life_app/model/common_response_model.dart';
-import 'package:hobby_life_app/model/user_auth_model.dart';
 
-class UserAuthRepository {
+class ChatRepository {
   final _dio = Dio(BaseOptions(
     baseUrl: 'http://172.30.1.17:8080',
     connectTimeout: const Duration(seconds: 1).inMilliseconds,
@@ -14,13 +14,10 @@ class UserAuthRepository {
     },
   ));
 
-  Future<UserAuthModel> login({required String email, required String password}) async {
-    final response = await _dio.post('/auth/login', data: {
-      'email': email,
-      'password': password,
-    });
-    print("login : ${response.data}");
+  Future<List<ChatMessageModel>> getChatMessages(int chatroomId) async {
+    final response = await _dio.get('/chatroom/$chatroomId/message');
+    print("getChatMessages : ${response.data}");
     CommonResponseModel<dynamic> commonResponse = CommonResponseModel.fromJson(response.data);
-    return UserAuthModel.fromJson(commonResponse.data!);
+    return List.from(commonResponse.data.map((e) => ChatMessageModel.fromJson(e)));
   }
 }
