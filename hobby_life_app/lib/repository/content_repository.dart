@@ -12,7 +12,7 @@ class ContentRepository {
     headers: {
       'Content-Type': 'application/json',
       'Accept': 'application/json',
-      'Authorization': 'Bearer eyJhbGciOiJIUzUxMiJ9.eyJzdWIiOiIyIiwiZXhwIjoxNjk3MzUxNDM3fQ.TCkhPqFy9V5KwWUV_knZK52d-eW3i1ifgiHpRQDPU6G7A2t3ZUXexU9-6m9fK8ZMkcy1gl03FDleJ7m0mPH1_Q',
+      'Authorization': 'Bearer eyJhbGciOiJIUzUxMiJ9.eyJzdWIiOiIyIiwiZXhwIjoxNjk3NDM4NzU4fQ.KaQTyehMvZx-0ep8MkMjonObcBkBorKA0kOnLrsyubKM9OXoqqlYYX-vH65b-fUt8CIqAyXprEudWJLHUrBY9g',
     },
   ));
 

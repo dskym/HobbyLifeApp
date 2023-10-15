@@ -138,6 +138,7 @@ class _ChatroomScreenState extends ConsumerState<ChatroomScreen> {
             ElevatedButton(
               onPressed: () {
                 ref.read(chatroomProvider(widget.id).notifier).leaveChatroom(id: widget.id);
+                Navigator.pop(context);
               },
               child: Text('나가기'),
             ),
