@@ -54,6 +54,7 @@ class _HobbyHistoryInputModalState
               initialValue: hobbyName,
               keyboardType: TextInputType.text,
               decoration: const InputDecoration(
+                border: OutlineInputBorder(),
                 labelText: '이름',
                 hintText: '취미 이름을 입력해주세요.',
               ),
@@ -65,10 +66,12 @@ class _HobbyHistoryInputModalState
               },
               onSaved: (newValue) => hobbyName = newValue!,
             ),
+            const SizedBox(height: 10),
             TextFormField(
               initialValue: hobbyDate,
               keyboardType: TextInputType.datetime,
               decoration: const InputDecoration(
+                border: OutlineInputBorder(),
                 labelText: '취미 날짜',
                 hintText: '취미 날짜를 입력해주세요.',
               ),
@@ -80,10 +83,12 @@ class _HobbyHistoryInputModalState
               },
               onSaved: (newValue) => hobbyDate = newValue!,
             ),
+            const SizedBox(height: 10),
             TextFormField(
               initialValue: categoryName,
               keyboardType: TextInputType.text,
               decoration: const InputDecoration(
+                border: OutlineInputBorder(),
                 labelText: '카테고리',
                 hintText: '카테고리를 선택해주세요.',
               ),
@@ -95,10 +100,12 @@ class _HobbyHistoryInputModalState
               },
               onSaved: (newValue) => categoryName = newValue!,
             ),
+            const SizedBox(height: 10),
             TextFormField(
               initialValue: score.toString(),
               keyboardType: TextInputType.number,
               decoration: const InputDecoration(
+                border: OutlineInputBorder(),
                 labelText: '만족도',
                 hintText: '만족도를 입력해주세요.',
               ),
@@ -110,10 +117,12 @@ class _HobbyHistoryInputModalState
               },
               onSaved: (newValue) => score = newValue! as int,
             ),
+            const SizedBox(height: 10),
             TextFormField(
               initialValue: cost.toString(),
               keyboardType: TextInputType.number,
               decoration: const InputDecoration(
+                border: OutlineInputBorder(),
                 labelText: '비용',
                 hintText: '비용을 입력해주세요.',
               ),
@@ -125,10 +134,12 @@ class _HobbyHistoryInputModalState
               },
               onSaved: (newValue) => cost = newValue! as int,
             ),
+            const SizedBox(height: 10),
             TextFormField(
               initialValue: cost.toString(),
               keyboardType: TextInputType.number,
               decoration: const InputDecoration(
+                border: OutlineInputBorder(),
                 labelText: '비용',
                 hintText: '비용을 입력해주세요.',
               ),
@@ -140,10 +151,12 @@ class _HobbyHistoryInputModalState
               },
               onSaved: (newValue) => cost = newValue! as int,
             ),
+            const SizedBox(height: 10),
             TextFormField(
               initialValue: startTime,
               keyboardType: TextInputType.number,
               decoration: const InputDecoration(
+                border: OutlineInputBorder(),
                 labelText: '시작 시간',
                 hintText: '시작 시간을 입력해주세요.',
               ),
@@ -155,10 +168,12 @@ class _HobbyHistoryInputModalState
               },
               onSaved: (newValue) => startTime = newValue!,
             ),
+            const SizedBox(height: 10),
             TextFormField(
               initialValue: endTime,
               keyboardType: TextInputType.number,
               decoration: const InputDecoration(
+                border: OutlineInputBorder(),
                 labelText: '종료 시간',
                 hintText: '종료 시간을 입력해주세요.',
               ),
@@ -170,6 +185,7 @@ class _HobbyHistoryInputModalState
               },
               onSaved: (newValue) => endTime = newValue!,
             ),
+            const SizedBox(height: 10),
             ElevatedButton(
               onPressed: () => onSave(context),
               child: const Text('저장'),

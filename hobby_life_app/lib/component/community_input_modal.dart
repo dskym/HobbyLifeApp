@@ -60,6 +60,7 @@ class _CommunityInputModalState extends ConsumerState<CommunityInputModal> {
               initialValue: title,
               keyboardType: TextInputType.text,
               decoration: const InputDecoration(
+                border: OutlineInputBorder(),
                 labelText: '이름',
                 hintText: '커뮤니티 이름을 입력해주세요.',
               ),
@@ -77,6 +78,7 @@ class _CommunityInputModalState extends ConsumerState<CommunityInputModal> {
               keyboardType: TextInputType.multiline,
               maxLines: 5,
               decoration: const InputDecoration(
+                border: OutlineInputBorder(),
                 labelText: '설명',
                 hintText: '커뮤니티에 대한 설명을 입력해주세요.',
               ),
@@ -96,6 +98,9 @@ class _CommunityInputModalState extends ConsumerState<CommunityInputModal> {
                   return DropdownButtonFormField<CategoryModel>(
                     value: null,
                     hint: const Text('커뮤니티 카테고리를 선택해주세요.'),
+                    decoration: const InputDecoration(
+                      border: OutlineInputBorder(),
+                    ),
                     items: snapshot.data
                         .map<DropdownMenuItem<CategoryModel>>(
                             (CategoryModel category) =>

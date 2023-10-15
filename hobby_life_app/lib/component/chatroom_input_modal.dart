@@ -61,6 +61,7 @@ class _ChatroomInputModalState extends ConsumerState<ChatroomInputModal> {
               initialValue: name,
               keyboardType: TextInputType.text,
               decoration: const InputDecoration(
+                border: OutlineInputBorder(),
                 labelText: '이름',
                 hintText: '채팅방 이름을 입력해주세요.',
               ),
@@ -78,6 +79,7 @@ class _ChatroomInputModalState extends ConsumerState<ChatroomInputModal> {
               keyboardType: TextInputType.multiline,
               maxLines: 5,
               decoration: const InputDecoration(
+                border: OutlineInputBorder(),
                 labelText: '설명',
                 hintText: '채팅방에 대한 설명을 입력해주세요.',
               ),

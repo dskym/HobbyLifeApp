@@ -4,7 +4,7 @@ import 'package:hobby_life_app/model/hobby_model.dart';
 
 class HobbyRepository {
   final _dio = Dio(BaseOptions(
-    baseUrl: 'http://10.0.2.2:8080',
+    baseUrl: 'http://172.30.1.17:8080',
     connectTimeout: const Duration(seconds: 1).inMilliseconds,
     receiveTimeout: const Duration(seconds: 1).inMilliseconds,
     headers: {
