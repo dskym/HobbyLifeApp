@@ -9,18 +9,9 @@ final communityRepositoryProvider = Provider<CommunityRepository>((ref) => Commu
 @riverpod
 class Community extends _$Community {
   @override
-  Future<CommunityModel> build(String communityId) async {
-    return ref.read(communityRepositoryProvider).getCommunity(communityId: communityId);
-  }
-
-  Future<void> joinCommunity({required String id}) async {
-    final communityRepository = ref.read(communityRepositoryProvider);
-    await communityRepository.joinCommunity(communityId: id);
-  }
-
-  Future<void> leaveCommunity({required String id}) async {
-    final communityRepository = ref.read(communityRepositoryProvider);
-    await communityRepository.leaveCommunity(communityId: id);
+  Future<CommunityModel> build(int communityId) async {
+    List<CommunityModel> communityModelList = await ref.watch(communityListProvider.future);
+    return communityModelList.firstWhere((element) => element.communityId == communityId);
   }
 }
 
@@ -28,43 +19,55 @@ class Community extends _$Community {
 class CommunityList extends _$CommunityList {
   @override
   Future<List<CommunityModel>> build() async {
-    return ref.read(communityRepositoryProvider).getAllCommunity();
+    return ref.watch(communityRepositoryProvider).getAllCommunity();
   }
 
   Future<void> createCommunity({required String title, required String description, required int categoryId}) async {
-    final communityModel = await ref.read(communityRepositoryProvider).createCommunity(title: title, description: description, categoryId: categoryId);
+    final communityModel = await ref.watch(communityRepositoryProvider).createCommunity(title: title, description: description, categoryId: categoryId);
     final previousState = await future;
     state = AsyncData([...previousState, communityModel]);
   }
 
-  Future<void> deleteCommunity({required String id}) async {
-    final communityRepository = ref.read(communityRepositoryProvider);
-    await communityRepository.deleteCommunity(communityId: id);
+  Future<void> deleteCommunity({required int communityId}) async {
+    final communityRepository = ref.watch(communityRepositoryProvider);
+    await communityRepository.deleteCommunity(communityId: communityId);
     final previousState = await future;
-    state = AsyncData(previousState.where((element) => element.communityId.toString() != id).toList());
+    state = AsyncData(previousState.where((element) => element.communityId != communityId).toList());
   }
 
-  Future<void> updateCommunity({required String id, required String title, required String description, required int categoryId}) async {
-    final communityRepository = ref.read(communityRepositoryProvider);
-    final communityModel = await communityRepository.updateCommunity(communityId: id, title: title, description: description, categoryId: categoryId);
+  Future<void> getAllCommunity() async {
+    final communityRepository = ref.watch(communityRepositoryProvider);
+    final communityModel = await communityRepository.getAllCommunity();
+    state = AsyncData(communityModel);
+  }
+
+  Future<void> updateCommunity({required int communityId, required String title, required String description, required int categoryId}) async {
+    final communityRepository = ref.watch(communityRepositoryProvider);
+    final communityModel = await communityRepository.updateCommunity(communityId: communityId, title: title, description: description, categoryId: categoryId);
     final previousState = await future;
     state = AsyncData(previousState.map((element) {
-      if (element.communityId.toString() == id) {
-        return element.copyWith(title: title, description: description, categoryName: communityModel.categoryName);
+      if (element.communityId == communityId) {
+        return communityModel;
       }
       return element;
     }).toList());
   }
 
-  Future<void> getAllCommunity() async {
-    final communityRepository = ref.read(communityRepositoryProvider);
-    final communityModel = await communityRepository.getAllCommunity();
+  Future<void> getJoinCommunity() async {
+    final communityRepository = ref.watch(communityRepositoryProvider);
+    final communityModel = await communityRepository.getJoinCommunity();
     state = AsyncData(communityModel);
   }
 
-  Future<void> joinCommunity() async {
-    final communityRepository = ref.read(communityRepositoryProvider);
-    final communityModel = await communityRepository.getJoinCommunity();
-    state = AsyncData(communityModel);
+  Future<void> joinCommunity({required int communityId}) async {
+    final communityRepository = ref.watch(communityRepositoryProvider);
+    await communityRepository.joinCommunity(communityId: communityId);
+    ref.invalidateSelf();
+  }
+
+  Future<void> leaveCommunity({required int communityId}) async {
+    final communityRepository = ref.watch(communityRepositoryProvider);
+    await communityRepository.leaveCommunity(communityId: communityId);
+    ref.invalidateSelf();
   }
 }

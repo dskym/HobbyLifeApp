@@ -68,7 +68,7 @@ class _CommunityScreenState extends ConsumerState<CommunityScreen>
         ref.read(communityListProvider.notifier).getAllCommunity();
         break;
       case 1:
-        ref.read(communityListProvider.notifier).joinCommunity();
+        ref.read(communityListProvider.notifier).getJoinCommunity();
         break;
     }
   }
@@ -78,7 +78,7 @@ class _CommunityScreenState extends ConsumerState<CommunityScreen>
       itemCount: communityList.length,
       itemBuilder: (BuildContext context, int index) {
         return CommunityCard(
-          id: communityList[index].communityId,
+          communityId: communityList[index].communityId,
           title: communityList[index].title,
           description: communityList[index].description,
           category: communityList[index].categoryName,
@@ -93,7 +93,7 @@ class _CommunityScreenState extends ConsumerState<CommunityScreen>
       itemCount: communityList.length,
       itemBuilder: (BuildContext context, int index) {
         return CommunityCard(
-          id: communityList[index].communityId,
+          communityId: communityList[index].communityId,
           title: communityList[index].title,
           description: communityList[index].description,
           category: communityList[index].categoryName,

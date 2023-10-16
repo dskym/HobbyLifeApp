@@ -5,9 +5,9 @@ import 'package:hobby_life_app/provider/content_provider.dart';
 
 class ContentInputModal extends ConsumerStatefulWidget {
   final int? communityId;
-  final ContentModel? contentModel;
+  final int? contentId;
 
-  const ContentInputModal({Key? key, this.communityId, this.contentModel}) : super(key: key);
+  const ContentInputModal({Key? key, this.communityId, this.contentId}) : super(key: key);
 
   @override
   ConsumerState<ConsumerStatefulWidget> createState() => _ContentInputModalState();
@@ -22,10 +22,6 @@ class _ContentInputModalState extends ConsumerState<ContentInputModal> {
   @override
   void initState() {
     super.initState();
-    if(widget.contentModel != null) {
-      title = widget.contentModel?.title ?? '';
-      detail = widget.contentModel?.detail ?? '';
-    }
   }
 
   @override
@@ -35,6 +31,18 @@ class _ContentInputModalState extends ConsumerState<ContentInputModal> {
 
   @override
   Widget build(BuildContext context) {
+    if(widget.communityId != null && widget.contentId != null) {
+      return ref.watch(contentProvider(widget.communityId!, widget.contentId!)).when(
+        data: (contentModel) => getForm(contentModel: contentModel),
+        loading: () => const Center(child: CircularProgressIndicator()),
+        error: (error, stackTrace) => const Center(child: Text('에러')),
+      );
+    } else {
+      return getForm();
+    }
+  }
+
+  Widget getForm({ContentModel? contentModel}) {
     return Form(
       key: formKey,
       child: Container(
@@ -52,7 +60,7 @@ class _ContentInputModalState extends ConsumerState<ContentInputModal> {
               ],
             ),
             TextFormField(
-              initialValue: title,
+              initialValue: contentModel?.title ?? '',
               keyboardType: TextInputType.text,
               decoration: const InputDecoration(
                 border: OutlineInputBorder(),
@@ -65,11 +73,11 @@ class _ContentInputModalState extends ConsumerState<ContentInputModal> {
                 }
                 return null;
               },
-              onSaved: (newValue) => title = newValue!,
+              onSaved: (newValue) => title = newValue,
             ),
             const SizedBox(height: 10),
             TextFormField(
-              initialValue: detail,
+              initialValue: contentModel?.detail ?? '',
               keyboardType: TextInputType.multiline,
               maxLines: 10,
               decoration: const InputDecoration(
@@ -83,7 +91,7 @@ class _ContentInputModalState extends ConsumerState<ContentInputModal> {
                 }
                 return null;
               },
-              onSaved: (newValue) => detail = newValue!,
+              onSaved: (newValue) => detail = newValue,
             ),
             const SizedBox(height: 10),
             ElevatedButton(
@@ -96,7 +104,6 @@ class _ContentInputModalState extends ConsumerState<ContentInputModal> {
     );
   }
 
-
   goBackScreen(BuildContext context) async {
     Navigator.of(context).pop();
   }
@@ -105,16 +112,16 @@ class _ContentInputModalState extends ConsumerState<ContentInputModal> {
     if (formKey.currentState!.validate()) {
       formKey.currentState!.save();
 
-      if(widget.contentModel != null) {
-        ref.read(contentListProvider(widget.communityId!.toString()).notifier).updateContent(
-          communityId: widget.communityId!.toString(),
-          contentId: widget.contentModel!.contentId.toString(),
+      if(widget.communityId != null && widget.contentId != null) {
+        ref.read(contentListProvider(widget.communityId!).notifier).updateContent(
+          communityId: widget.communityId!,
+          contentId: widget.contentId!,
           title: title!,
           detail: detail!,
         );
       } else {
-        ref.read(contentListProvider(widget.communityId!.toString()).notifier).createContent(
-          communityId: '1',
+        ref.read(contentListProvider(widget.communityId!).notifier).createContent(
+          communityId: widget.communityId!,
           title: title!,
           detail: detail!,
         );

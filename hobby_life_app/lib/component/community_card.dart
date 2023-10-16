@@ -3,7 +3,7 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:hobby_life_app/screen/community_detail_screen.dart';
 
 class CommunityCard extends ConsumerWidget {
-  final int id;
+  final int communityId;
   final String title;
   final String description;
   final String category;
@@ -11,7 +11,7 @@ class CommunityCard extends ConsumerWidget {
 
   const CommunityCard(
       {Key? key,
-      required this.id,
+      required this.communityId,
       required this.title,
       required this.description,
       required this.category,
@@ -57,7 +57,7 @@ class CommunityCard extends ConsumerWidget {
               },
               transitionDuration: const Duration(milliseconds: 100),
               pageBuilder: (context, animation, secondaryAnimation) =>
-                  CommunityDetailScreen(id),
+                  CommunityDetailScreen(communityId),
             ),
           );
         },

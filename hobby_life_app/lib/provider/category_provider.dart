@@ -11,18 +11,18 @@ final categoryRepositoryProvider = Provider<CategoryRepository>((ref) => Categor
 class CategoryList extends _$CategoryList {
   @override
   Future<List<CategoryModel>> build() async {
-    return ref.read(categoryRepositoryProvider).getAllCategory();
+    return ref.watch(categoryRepositoryProvider).getAllCategory();
   }
 
   Future<void> createCategory({required String categoryName}) async {
-    final categoryRepository = ref.read(categoryRepositoryProvider);
+    final categoryRepository = ref.watch(categoryRepositoryProvider);
     final categoryModel = await categoryRepository.createCategory(categoryName: categoryName);
     final previousState = await future;
     state = AsyncData([...previousState, categoryModel]);
   }
 
   Future<void> deleteCategory({required int id}) async {
-    final categoryRepository = ref.read(categoryRepositoryProvider);
+    final categoryRepository = ref.watch(categoryRepositoryProvider);
     await categoryRepository.deleteCategory(id: id);
     final previousState = await future;
     state = AsyncData(previousState.where((element) => element.id != id).toList());
