@@ -2,21 +2,27 @@ import 'package:flutter/material.dart';
 import 'hobby_history_input_modal.dart';
 
 class HobbyHistoryCard extends StatelessWidget {
-  final String hobbyName;
-  final String categoryName;
-  final int score;
-  final int cost;
+  final int id;
+  final String name;
+  final int categoryId;
+  final String hobbyDate;
   final String startTime;
   final String endTime;
+  final int? score;
+  final int? cost;
+  final String? memo;
 
   const HobbyHistoryCard(
       {Key? key,
-      required this.hobbyName,
-      required this.categoryName,
+      required this.id,
+      required this.name,
+      required this.categoryId,
+      required this.hobbyDate,
+      required this.startTime,
+      required this.endTime,
       required this.score,
       required this.cost,
-      required this.startTime,
-      required this.endTime})
+      required this.memo})
       : super(key: key);
 
   @override
@@ -24,14 +30,14 @@ class HobbyHistoryCard extends StatelessWidget {
     return Card(
       child: ListTile(
         leading: const Icon(Icons.history),
-        title: Text(hobbyName),
+        title: Text(name),
         subtitle: Row(
           children: [
-            Text(categoryName),
+            Text(categoryId.toString()),
             const SizedBox(width: 10),
-            Text('$score 점'),
+            Text('${score ?? 0}점'),
             const SizedBox(width: 10),
-            Text('$cost 원'),
+            Text('${cost ?? 0}원'),
             const SizedBox(width: 10),
             Text('$startTime ~ $endTime'),
           ],
@@ -47,7 +53,7 @@ class HobbyHistoryCard extends StatelessWidget {
       isDismissible: true,
       isScrollControlled: true,
       builder: (context) {
-        return const HobbyHistoryInputModal();
+        return HobbyHistoryInputModal(hobbyHistoryId: id);
       },
     );
   }

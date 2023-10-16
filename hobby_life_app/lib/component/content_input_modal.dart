@@ -126,8 +126,7 @@ class _ContentInputModalState extends ConsumerState<ContentInputModal> {
           detail: detail!,
         );
       }
+      Navigator.of(context).pop();
     }
-
-    Navigator.of(context).pop();
   }
 }

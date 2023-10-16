@@ -7,45 +7,53 @@ part 'hobby_history_provider.g.dart';
 final hobbyHistoryRepositoryProvider = Provider<HobbyHistoryRepository>((ref) => HobbyHistoryRepository());
 
 @riverpod
+class HobbyHistory extends _$HobbyHistory {
+  @override
+  Future<HobbyHistoryModel> build(int hobbyHistoryId) async {
+    final hobbyHistoryRepository = ref.watch(hobbyHistoryRepositoryProvider);
+    return await hobbyHistoryRepository.getHobbyHistory(hobbyHistoryId: hobbyHistoryId);
+  }
+}
+
+@riverpod
 class HobbyHistoryList extends _$HobbyHistoryList {
   @override
   Future<Map<String, List<HobbyHistoryModel>>> build(DateTime now) async {
-    return ref.read(hobbyHistoryRepositoryProvider).getAllHobbyHistory(now);
+    return ref.watch(hobbyHistoryRepositoryProvider).getAllHobbyHistory(now);
   }
 
-  Future<void> createHobbyHistory({required int hobbyId, required int score, required int cost, required DateTime hobbyDate}) async {
-    final hobbyHistoryRepository = ref.read(hobbyHistoryRepositoryProvider);
-    final hobbyHistoryModel = await hobbyHistoryRepository.addHobbyHistory(hobbyId: hobbyId, score: score, cost: cost, hobbyDate: hobbyDate);
+  Future<void> createHobbyHistory({required int categoryId, required String name, required String hobbyDate, required String startTime, required String endTime, required String? memo, required int? score, required int? cost}) async {
+    final hobbyHistoryRepository = ref.watch(hobbyHistoryRepositoryProvider);
+    final hobbyHistoryModel = await hobbyHistoryRepository.addHobbyHistory(categoryId: categoryId, name: name, hobbyDate: hobbyDate, startTime: startTime, endTime: endTime, memo: memo, score: score, cost: cost);
     final previousState = await future;
-    state = AsyncData({});
-//    state = AsyncData([...previousState, hobbyHistoryModel]);
+    previousState[hobbyDate] = [...previousState[hobbyDate] ?? [], hobbyHistoryModel];
+    state = AsyncData(Map.from(previousState));
+    ref.invalidate(hobbyHistoryListProvider);
   }
 
   Future<void> deleteHobbyHistory({required int id}) async {
-    final hobbyHistoryRepository = ref.read(hobbyHistoryRepositoryProvider);
+    final hobbyHistoryRepository = ref.watch(hobbyHistoryRepositoryProvider);
     await hobbyHistoryRepository.deleteHobbyHistory(hobbyHistoryId: id);
     final previousState = await future;
-    state = AsyncData({});
-    // state = AsyncData(previousState.where((element) => element.id != id).toList());
+    previousState.forEach((key, value) {
+      previousState[key] = value.where((element) => element.id != id).toList();
+    });
+    state = AsyncData(Map.from(previousState));
+    ref.invalidate(hobbyHistoryListProvider);
   }
 
-  Future<void> updateHobbyHistory({required int hobbyHistoryId, required int hobbyId, required int score, required int cost, required DateTime hobbyDate}) async {
-    final hobbyHistoryRepository = ref.read(hobbyHistoryRepositoryProvider);
-    final hobbyHistoryModel = await hobbyHistoryRepository.updateHobbyHistory(hobbyHistoryId: hobbyHistoryId, hobbyId: hobbyId, score: score, cost: cost, hobbyDate: hobbyDate);
+  Future<void> updateHobbyHistory({required int hobbyHistoryId, required int categoryId, required String name, required String hobbyDate, required String startTime, required String endTime, required String? memo, required int? score, required int? cost}) async {
+    final hobbyHistoryRepository = ref.watch(hobbyHistoryRepositoryProvider);
+    final hobbyHistoryModel = await hobbyHistoryRepository.updateHobbyHistory(hobbyHistoryId: hobbyHistoryId, categoryId: categoryId, name: name, hobbyDate: hobbyDate, startTime: startTime, endTime: endTime, memo: memo, score: score, cost: cost);
     final previousState = await future;
-    state = AsyncData({});
-    // state = AsyncData(previousState.map((element) {
-    //   if (element.id == hobbyHistoryId) {
-    //     return element.copyWith(score: score, cost: cost, hobbyDate: hobbyDate);
-    //   }
-    //   return element;
-    // }).toList());
-  }
-
-  Future<void> getHobbyHistory({required int hobbyHistoryId}) async {
-    final hobbyHistoryRepository = ref.read(hobbyHistoryRepositoryProvider);
-    final hobbyHistoryModel = await hobbyHistoryRepository.getHobbyHistory(hobbyHistoryId: hobbyHistoryId);
-    state = AsyncData({});
-    // state = AsyncData([hobbyHistoryModel]);
+    state = AsyncData({
+      hobbyDate: previousState[hobbyDate]!.map((element) {
+        if (element.id == hobbyHistoryId) {
+          return hobbyHistoryModel;
+        }
+        return element;
+      }).toList(),
+    });
+    ref.invalidate(hobbyHistoryListProvider);
   }
 }

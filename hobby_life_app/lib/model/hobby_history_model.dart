@@ -7,10 +7,14 @@ part 'hobby_history_model.g.dart';
 class HobbyHistoryModel with _$HobbyHistoryModel {
   factory HobbyHistoryModel({
     required int id,
-    required int score,
-    required int cost,
-    required DateTime hobbyDate,
-    required String hobbyName,
+    required String name,
+    required String hobbyDate,
+    required String startTime,
+    required String endTime,
+    required int categoryId,
+    required int? score,
+    required int? cost,
+    required String? memo,
   }) = _HobbyHistoryModel;
 
   factory HobbyHistoryModel.fromJson(Map<String, dynamic> json) =>
