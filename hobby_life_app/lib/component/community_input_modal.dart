@@ -1,3 +1,4 @@
+import 'package:collection/collection.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:hobby_life_app/model/category_model.dart';
@@ -6,9 +7,9 @@ import 'package:hobby_life_app/provider/category_provider.dart';
 import 'package:hobby_life_app/provider/community_provider.dart';
 
 class CommunityInputModal extends ConsumerStatefulWidget {
-  final CommunityModel? communityModel;
+  final int? communityId;
 
-  const CommunityInputModal({Key? key, this.communityModel}) : super(key: key);
+  const CommunityInputModal({Key? key, this.communityId}) : super(key: key);
 
   @override
   ConsumerState<ConsumerStatefulWidget> createState() =>
@@ -20,17 +21,11 @@ class _CommunityInputModalState extends ConsumerState<CommunityInputModal> {
 
   String? title;
   String? description;
-  String? categoryName;
-  int? categoryId;
+  CategoryModel? category;
 
   @override
   void initState() {
     super.initState();
-    if(widget.communityModel != null) {
-      title = widget.communityModel?.title ?? '';
-      description = widget.communityModel?.description ?? '';
-      categoryName = widget.communityModel?.categoryName ?? '';
-    }
   }
 
   @override
@@ -40,6 +35,18 @@ class _CommunityInputModalState extends ConsumerState<CommunityInputModal> {
 
   @override
   Widget build(BuildContext context) {
+    if(widget.communityId != null) {
+      return ref.watch(communityProvider(widget.communityId!)).when(
+        data: (community) => getForm(communityModel: community),
+        loading: () => const Center(child: CircularProgressIndicator()),
+        error: (error, stackTrace) => const Center(child: Text('에러 발생')),
+      );
+    } else {
+      return getForm();
+    }
+  }
+
+  Widget getForm({CommunityModel? communityModel}) {
     return Form(
       key: formKey,
       child: Container(
@@ -57,7 +64,7 @@ class _CommunityInputModalState extends ConsumerState<CommunityInputModal> {
               ],
             ),
             TextFormField(
-              initialValue: title,
+              initialValue: communityModel?.title ?? '',
               keyboardType: TextInputType.text,
               decoration: const InputDecoration(
                 border: OutlineInputBorder(),
@@ -70,11 +77,11 @@ class _CommunityInputModalState extends ConsumerState<CommunityInputModal> {
                 }
                 return null;
               },
-              onSaved: (newValue) => title = newValue!,
+              onSaved: (newValue) => title = newValue,
             ),
             const SizedBox(height: 10),
             TextFormField(
-              initialValue: description,
+              initialValue: communityModel?.description ?? '',
               keyboardType: TextInputType.multiline,
               maxLines: 5,
               decoration: const InputDecoration(
@@ -88,20 +95,21 @@ class _CommunityInputModalState extends ConsumerState<CommunityInputModal> {
                 }
                 return null;
               },
-              onSaved: (newValue) => description = newValue!,
+              onSaved: (newValue) => description = newValue,
             ),
             const SizedBox(height: 10),
-            FutureBuilder<List<CategoryModel>>(
-              future: ref.read(categoryListProvider.future),
-              builder: (BuildContext context, AsyncSnapshot snapshot) {
-                if (snapshot.hasData) {
+            ref.watch(categoryListProvider).when(
+                data: (categoryList) {
+                  final CategoryModel? model = categoryList.firstWhereOrNull(
+                      (element) =>
+                          element.name == communityModel?.categoryName);
                   return DropdownButtonFormField<CategoryModel>(
-                    value: null,
+                    value: model,
                     hint: const Text('커뮤니티 카테고리를 선택해주세요.'),
                     decoration: const InputDecoration(
                       border: OutlineInputBorder(),
                     ),
-                    items: snapshot.data
+                    items: categoryList
                         .map<DropdownMenuItem<CategoryModel>>(
                             (CategoryModel category) =>
                                 DropdownMenuItem<CategoryModel>(
@@ -109,13 +117,13 @@ class _CommunityInputModalState extends ConsumerState<CommunityInputModal> {
                                   child: Text(category.name),
                                 ))
                         .toList(),
-                    onChanged: (value) => categoryId = value?.id ?? 0,
+                    onChanged: (value) => category = value,
+                    onSaved: (newValue) => category = newValue,
                   );
-                } else {
-                  return const Center(child: CircularProgressIndicator());
-                }
-              },
-            ),
+                },
+                loading: () => const Center(child: CircularProgressIndicator()),
+                error: (error, stackTrace) =>
+                    const Center(child: Text('에러 발생'))),
             const SizedBox(height: 10),
             ElevatedButton(
               onPressed: () => onSave(context),
@@ -135,13 +143,15 @@ class _CommunityInputModalState extends ConsumerState<CommunityInputModal> {
     if (formKey.currentState!.validate()) {
       formKey.currentState!.save();
 
-      if(widget.communityModel == null) {
-        ref
-            .read(communityListProvider.notifier)
-            .createCommunity(title: title!, description: description!, categoryId: categoryId!);
+      if (widget.communityId == null) {
+        ref.read(communityListProvider.notifier).createCommunity(
+            title: title!, description: description!, categoryId: category!.id);
       } else {
-        ref.read(communityListProvider.notifier)
-            .updateCommunity(id: widget.communityModel!.communityId.toString(), title: title!, description: description!, categoryId: categoryId!);
+        ref.read(communityListProvider.notifier).updateCommunity(
+            communityId: widget.communityId!,
+            title: title!,
+            description: description!,
+            categoryId: category!.id);
       }
     }
     Navigator.of(context).pop();

@@ -4,13 +4,13 @@ import 'package:hobby_life_app/model/community_model.dart';
 
 class CommunityRepository {
   final _dio = Dio(BaseOptions(
-    baseUrl: 'http://172.30.1.17:8080',
+    baseUrl: 'http://10.0.2.2:8080',
     connectTimeout: const Duration(seconds: 1).inMilliseconds,
     receiveTimeout: const Duration(seconds: 1).inMilliseconds,
     headers: {
       'Content-Type': 'application/json',
       'Accept': 'application/json',
-      'Authorization': 'Bearer eyJhbGciOiJIUzUxMiJ9.eyJzdWIiOiIyIiwiZXhwIjoxNjk3NDM4NzU4fQ.KaQTyehMvZx-0ep8MkMjonObcBkBorKA0kOnLrsyubKM9OXoqqlYYX-vH65b-fUt8CIqAyXprEudWJLHUrBY9g',
+      'Authorization': 'Bearer eyJhbGciOiJIUzUxMiJ9.eyJzdWIiOiIyIiwiZXhwIjoxNjk3NTQyNzMzfQ.h2N4Q0AHtbbkwTLLxOl9aWJGjgsXocOcwa9gQBqR4b85zK9xWz2gmjbxQqP9oQUxquAXXTVNLo2YIyDYVZhPww',
     },
   ));
 
@@ -25,12 +25,12 @@ class CommunityRepository {
     return CommunityModel.fromJson(commonResponse.data!);
   }
 
-  Future<void> deleteCommunity({required String communityId}) async {
+  Future<void> deleteCommunity({required int communityId}) async {
     final response = await _dio.delete('/community/$communityId');
     print("deleteCommunity : ${response.data}");
   }
 
-  Future<CommunityModel> updateCommunity({required String communityId, required String title, required String description, required int categoryId}) async {
+  Future<CommunityModel> updateCommunity({required int communityId, required String title, required String description, required int categoryId}) async {
     final response = await _dio.put('/community/$communityId', data: {
       'title': title,
       'description': description,
@@ -41,7 +41,7 @@ class CommunityRepository {
     return CommunityModel.fromJson(commonResponse.data!);
   }
 
-  Future<CommunityModel> getCommunity({required String communityId}) async {
+  Future<CommunityModel> getCommunity({required int communityId}) async {
     final response = await _dio.get('/community/$communityId');
     print("getCommunity : ${response.data}");
     CommonResponseModel<dynamic> commonResponse = CommonResponseModel.fromJson(response.data);
@@ -55,12 +55,12 @@ class CommunityRepository {
     return List.from(commonResponse.data?.map((e) => CommunityModel.fromJson(e)) ?? []);
   }
 
-  Future<void> joinCommunity({required String communityId}) async {
+  Future<void> joinCommunity({required int communityId}) async {
     final response = await _dio.post('/community/$communityId/join');
     print("joinCommunity : ${response.data}");
   }
 
-  Future<void> leaveCommunity({required String communityId}) async {
+  Future<void> leaveCommunity({required int communityId}) async {
     await _dio.delete('/community/$communityId/leave');
     print("leaveCommunity");
   }

@@ -46,7 +46,7 @@ class _ChatroomScreenState extends ConsumerState<ChatroomScreen> {
     if(_client == null) {
       _client = StompClient(
         config: StompConfig.sockJS(
-          url: 'http://172.30.1.17:8080/ws/chatroom',
+          url: 'http://10.0.2.2:8080/ws/chatroom',
           onConnect: onConnect,
         ),
       );

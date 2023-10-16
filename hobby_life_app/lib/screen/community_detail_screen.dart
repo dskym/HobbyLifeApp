@@ -6,11 +6,12 @@ import 'package:hobby_life_app/component/content_input_modal.dart';
 import 'package:hobby_life_app/model/community_model.dart';
 import 'package:hobby_life_app/provider/community_provider.dart';
 import 'package:hobby_life_app/provider/content_provider.dart';
+import 'package:hobby_life_app/provider/user_provider.dart';
 
 class CommunityDetailScreen extends ConsumerStatefulWidget {
-  final int id;
+  final int communityId;
 
-  const CommunityDetailScreen(this.id, {Key? key}) : super(key: key);
+  const CommunityDetailScreen(this.communityId, {Key? key}) : super(key: key);
 
   @override
   ConsumerState<ConsumerStatefulWidget> createState() =>
@@ -21,7 +22,7 @@ class _CommunityDetailScreenState extends ConsumerState<CommunityDetailScreen> {
   @override
   Widget build(BuildContext context) {
     return FutureBuilder(
-      future: ref.watch(communityProvider(widget.id.toString()).future),
+      future: ref.watch(communityProvider(widget.communityId).future),
       builder: (BuildContext context, AsyncSnapshot snapshot) {
         if (snapshot.hasData) {
           final community = snapshot.data;
@@ -30,27 +31,38 @@ class _CommunityDetailScreenState extends ConsumerState<CommunityDetailScreen> {
                 title: Text(community.title),
                 centerTitle: true,
                 actions: [
-                  //TODO:  매니저만 보이도록 수정 필요
-                  IconButton(
-                    onPressed: () => showCommunityInputModal(context, community),
-                    icon: const Text('수정')
-                  ),
+                  ref.watch(userProvider).when(
+                        data: (user) {
+                          if (user.userId == community.authorId) {
+                            return IconButton(
+                              onPressed: () =>
+                                  showCommunityInputModal(context, community),
+                              icon: const Text('수정'),
+                            );
+                          } else {
+                            return const SizedBox();
+                          }
+                        },
+                        loading: () => const SizedBox(),
+                        error: (error, stackTrace) => const SizedBox(),
+                      ),
                   community.isJoin
                       ? IconButton(
                           onPressed: () {
                             ref
-                                .read(communityProvider(widget.id.toString())
-                                    .notifier)
-                                .leaveCommunity(id: widget.id.toString());
+                                .read(communityListProvider.notifier)
+                                .leaveCommunity(
+                                    communityId: widget.communityId);
+                            Navigator.pop(context);
                           },
                           icon: const Text('탈퇴'),
                         )
                       : IconButton(
                           onPressed: () {
                             ref
-                                .read(communityProvider(widget.id.toString())
-                                    .notifier)
-                                .joinCommunity(id: widget.id.toString());
+                                .read(communityListProvider.notifier)
+                                .joinCommunity(communityId: widget.communityId);
+                            Navigator.pop(context);
                           },
                           icon: const Text('가입'),
                         ),
@@ -65,16 +77,16 @@ class _CommunityDetailScreenState extends ConsumerState<CommunityDetailScreen> {
                     const Divider(),
                     const Text('게시글'),
                     FutureBuilder(
-                      future: ref.watch(contentListProvider('1').future),
+                      future: ref.watch(
+                          contentListProvider(widget.communityId).future),
                       builder: (BuildContext context, AsyncSnapshot snapshot) {
-                        print(snapshot.data);
                         if (snapshot.hasData) {
                           return ListView.builder(
                             shrinkWrap: true,
                             itemCount: snapshot.data.length,
                             itemBuilder: (BuildContext context, int index) {
                               return ContentCard(
-                                communityId: widget.id,
+                                communityId: widget.communityId,
                                 contentId: snapshot.data[index].contentId,
                                 title: snapshot.data[index].title,
                                 detail: snapshot.data[index].detail,
@@ -105,13 +117,14 @@ class _CommunityDetailScreenState extends ConsumerState<CommunityDetailScreen> {
     );
   }
 
-  void showCommunityInputModal(BuildContext context, CommunityModel communityModel) {
+  void showCommunityInputModal(
+      BuildContext context, CommunityModel communityModel) {
     showModalBottomSheet(
       context: context,
       isDismissible: true,
       isScrollControlled: true,
       builder: (context) {
-        return CommunityInputModal(communityModel: communityModel);
+        return CommunityInputModal(communityId: widget.communityId);
       },
     );
   }
@@ -122,7 +135,7 @@ class _CommunityDetailScreenState extends ConsumerState<CommunityDetailScreen> {
       isDismissible: true,
       isScrollControlled: true,
       builder: (context) {
-        return const ContentInputModal();
+        return ContentInputModal(communityId: widget.communityId);
       },
     );
   }
