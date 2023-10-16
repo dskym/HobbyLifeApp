@@ -153,7 +153,7 @@ class _CommunityInputModalState extends ConsumerState<CommunityInputModal> {
             description: description!,
             categoryId: category!.id);
       }
+      Navigator.of(context).pop();
     }
-    Navigator.of(context).pop();
   }
 }

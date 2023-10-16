@@ -85,12 +85,16 @@ class _CalendarScreenState extends ConsumerState<CalendarScreen> {
                   itemBuilder: (context, index) {
                     final hobbyHistory = snapshot.data[sel][index];
                     return HobbyHistoryCard(
-                        hobbyName: hobbyHistory.hobbyName,
-                        categoryName: "",
+                        id: hobbyHistory.id,
+                        name: hobbyHistory.name,
+                        categoryId: hobbyHistory.categoryId,
+                        hobbyDate: hobbyHistory.hobbyDate,
+                        startTime: hobbyHistory.startTime,
+                        endTime: hobbyHistory.endTime,
                         score: hobbyHistory.score,
                         cost: hobbyHistory.cost,
-                        startTime: "12:00:00",
-                        endTime: "14:00:00");
+                        memo: hobbyHistory.memo
+                    );
                   },
                 ),
               ),

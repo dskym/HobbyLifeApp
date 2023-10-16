@@ -1,9 +1,17 @@
+import 'package:collection/collection.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:hobby_life_app/model/category_model.dart';
+import 'package:hobby_life_app/model/hobby_history_model.dart';
+import 'package:hobby_life_app/provider/category_provider.dart';
 import 'package:hobby_life_app/provider/hobby_history_provider.dart';
+import 'package:intl/intl.dart';
 
 class HobbyHistoryInputModal extends ConsumerStatefulWidget {
-  const HobbyHistoryInputModal({Key? key}) : super(key: key);
+  final int? hobbyHistoryId;
+
+  const HobbyHistoryInputModal({Key? key, this.hobbyHistoryId})
+      : super(key: key);
 
   @override
   ConsumerState<ConsumerStatefulWidget> createState() =>
@@ -14,13 +22,18 @@ class _HobbyHistoryInputModalState
     extends ConsumerState<HobbyHistoryInputModal> {
   final GlobalKey<FormState> formKey = GlobalKey<FormState>();
 
-  String hobbyDate = '';
-  String hobbyName = '';
-  String categoryName = '';
-  int score = 0;
-  int cost = 0;
-  String startTime = '';
-  String endTime = '';
+  final TextEditingController hobbyDateController = TextEditingController();
+  final TextEditingController startTimeController = TextEditingController();
+  final TextEditingController endTimeController = TextEditingController();
+
+  String? name;
+  String? hobbyDate;
+  String? startTime;
+  String? endTime;
+  CategoryModel? category;
+  int? score;
+  int? cost;
+  String? memo;
 
   @override
   void initState() {
@@ -34,6 +47,22 @@ class _HobbyHistoryInputModalState
 
   @override
   Widget build(BuildContext context) {
+    if(widget.hobbyHistoryId != null) {
+      return ref.watch(hobbyHistoryProvider(widget.hobbyHistoryId!)).when(
+        data: (hobbyHistory) => getForm(hobbyHistoryModel: hobbyHistory),
+        loading: () => const Center(child: CircularProgressIndicator()),
+        error: (error, stackTrace) => const Center(child: Text('에러 발생')),
+      );
+    } else {
+      return getForm();
+    }
+  }
+
+  Widget getForm({HobbyHistoryModel? hobbyHistoryModel}) {
+    hobbyDateController.text = hobbyHistoryModel?.hobbyDate ?? '';
+    startTimeController.text = hobbyHistoryModel?.startTime ?? '';
+    endTimeController.text = hobbyHistoryModel?.endTime ?? '';
+
     return Form(
       key: formKey,
       child: Container(
@@ -51,7 +80,7 @@ class _HobbyHistoryInputModalState
               ],
             ),
             TextFormField(
-              initialValue: hobbyName,
+              initialValue: hobbyHistoryModel?.name ?? '',
               keyboardType: TextInputType.text,
               decoration: const InputDecoration(
                 border: OutlineInputBorder(),
@@ -64,12 +93,56 @@ class _HobbyHistoryInputModalState
                 }
                 return null;
               },
-              onSaved: (newValue) => hobbyName = newValue!,
+              onSaved: (newValue) => name = newValue,
             ),
             const SizedBox(height: 10),
+            ref.watch(categoryListProvider).when(
+                data: (categoryList) {
+                  final CategoryModel? model = categoryList.firstWhereOrNull(
+                          (element) =>
+                      element.id == hobbyHistoryModel?.categoryId);
+                  return DropdownButtonFormField<CategoryModel>(
+                    value: model,
+                    hint: const Text('카테고리를 선택해주세요.'),
+                    decoration: const InputDecoration(
+                      border: OutlineInputBorder(),
+                    ),
+                    items: categoryList
+                        .map<DropdownMenuItem<CategoryModel>>(
+                            (CategoryModel category) =>
+                            DropdownMenuItem<CategoryModel>(
+                              value: category,
+                              child: Text(category.name),
+                            ))
+                        .toList(),
+                    validator: (CategoryModel? value) {
+                      if (value == null) {
+                        return '카테고리를 선택해주세요.';
+                      }
+                      return null;
+                    },
+                    onChanged: (value) => category = value,
+                    onSaved: (newValue) => category = newValue,
+                  );
+                },
+                loading: () => const Center(child: CircularProgressIndicator()),
+                error: (error, stackTrace) =>
+                const Center(child: Text('에러 발생'))),
+            const SizedBox(height: 10),
             TextFormField(
-              initialValue: hobbyDate,
-              keyboardType: TextInputType.datetime,
+              controller: hobbyDateController,
+              readOnly: true,
+              onTap: () async {
+                final DateTime? picked = await showDatePicker(
+                  context: context,
+                  initialDate: DateFormat('yyyy-MM-dd').parse(hobbyHistoryModel?.hobbyDate ?? DateFormat('yyyy-MM-dd').format(DateTime.now())),
+                  firstDate: DateTime(1900),
+                  lastDate: DateTime(2100),
+                );
+                if (picked != null) {
+                  hobbyDateController.text = DateFormat('yyyy-MM-dd').format(picked);
+                }
+              },
               decoration: const InputDecoration(
                 border: OutlineInputBorder(),
                 labelText: '취미 날짜',
@@ -81,80 +154,22 @@ class _HobbyHistoryInputModalState
                 }
                 return null;
               },
-              onSaved: (newValue) => hobbyDate = newValue!,
+              onSaved: (newValue) => hobbyDate = newValue,
             ),
             const SizedBox(height: 10),
             TextFormField(
-              initialValue: categoryName,
-              keyboardType: TextInputType.text,
-              decoration: const InputDecoration(
-                border: OutlineInputBorder(),
-                labelText: '카테고리',
-                hintText: '카테고리를 선택해주세요.',
-              ),
-              validator: (String? value) {
-                if (value == null || value.isEmpty) {
-                  return '카테고리를 선택해주세요.';
+              controller: startTimeController,
+              readOnly: true,
+              onTap: () async {
+                final TimeOfDay? picked = await showTimePicker(
+                  context: context,
+                  initialTime: TimeOfDay.fromDateTime(DateFormat('HH:mm:ss').parse(hobbyHistoryModel?.startTime ?? DateFormat('HH:mm:ss').format(DateTime.now()))),
+                  initialEntryMode: TimePickerEntryMode.input,
+                );
+                if (picked != null) {
+                  startTimeController.text = "${picked.hour}:${picked.minute}:00";
                 }
-                return null;
               },
-              onSaved: (newValue) => categoryName = newValue!,
-            ),
-            const SizedBox(height: 10),
-            TextFormField(
-              initialValue: score.toString(),
-              keyboardType: TextInputType.number,
-              decoration: const InputDecoration(
-                border: OutlineInputBorder(),
-                labelText: '만족도',
-                hintText: '만족도를 입력해주세요.',
-              ),
-              validator: (String? value) {
-                if (value == null || value.isEmpty) {
-                  return '만족도를 입력해주세요.';
-                }
-                return null;
-              },
-              onSaved: (newValue) => score = newValue! as int,
-            ),
-            const SizedBox(height: 10),
-            TextFormField(
-              initialValue: cost.toString(),
-              keyboardType: TextInputType.number,
-              decoration: const InputDecoration(
-                border: OutlineInputBorder(),
-                labelText: '비용',
-                hintText: '비용을 입력해주세요.',
-              ),
-              validator: (String? value) {
-                if (value == null || value.isEmpty) {
-                  return '비용을 입력해주세요.';
-                }
-                return null;
-              },
-              onSaved: (newValue) => cost = newValue! as int,
-            ),
-            const SizedBox(height: 10),
-            TextFormField(
-              initialValue: cost.toString(),
-              keyboardType: TextInputType.number,
-              decoration: const InputDecoration(
-                border: OutlineInputBorder(),
-                labelText: '비용',
-                hintText: '비용을 입력해주세요.',
-              ),
-              validator: (String? value) {
-                if (value == null || value.isEmpty) {
-                  return '비용을 입력해주세요.';
-                }
-                return null;
-              },
-              onSaved: (newValue) => cost = newValue! as int,
-            ),
-            const SizedBox(height: 10),
-            TextFormField(
-              initialValue: startTime,
-              keyboardType: TextInputType.number,
               decoration: const InputDecoration(
                 border: OutlineInputBorder(),
                 labelText: '시작 시간',
@@ -166,12 +181,22 @@ class _HobbyHistoryInputModalState
                 }
                 return null;
               },
-              onSaved: (newValue) => startTime = newValue!,
+              onSaved: (newValue) => startTime = newValue,
             ),
             const SizedBox(height: 10),
             TextFormField(
-              initialValue: endTime,
-              keyboardType: TextInputType.number,
+              controller: endTimeController,
+              readOnly: true,
+              onTap: () async {
+                final TimeOfDay? picked = await showTimePicker(
+                  context: context,
+                  initialTime: TimeOfDay.fromDateTime(DateFormat('HH:mm:ss').parse(hobbyHistoryModel?.endTime ?? DateFormat('HH:mm:ss').format(DateTime.now()))),
+                  initialEntryMode: TimePickerEntryMode.input,
+                );
+                if (picked != null) {
+                  endTimeController.text = "${picked.hour}:${picked.minute}:00";
+                }
+              },
               decoration: const InputDecoration(
                 border: OutlineInputBorder(),
                 labelText: '종료 시간',
@@ -183,7 +208,68 @@ class _HobbyHistoryInputModalState
                 }
                 return null;
               },
-              onSaved: (newValue) => endTime = newValue!,
+              onSaved: (newValue) => endTime = newValue,
+            ),
+            const SizedBox(height: 10),
+            TextFormField(
+              initialValue: hobbyHistoryModel?.score?.toString(),
+              keyboardType: TextInputType.number,
+              decoration: const InputDecoration(
+                border: OutlineInputBorder(),
+                labelText: '만족도',
+                hintText: '만족도를 입력해주세요.',
+              ),
+              validator: (String? value) {
+                if(value != null && value.isNotEmpty) {
+                  if(int.tryParse(value) == null) {
+                    return '숫자를 입력해주세요.';
+                  }
+                  if (int.parse(value) < 0 || int.parse(value) > 5) {
+                    return '0 ~ 5 사이의 숫자를 입력해주세요.';
+                  }
+                }
+                return null;
+              },
+              onSaved: (newValue) => score = (newValue != null && newValue.isNotEmpty) ? int.parse(newValue) : null,
+            ),
+            const SizedBox(height: 10),
+            TextFormField(
+              initialValue: hobbyHistoryModel?.cost?.toString(),
+              keyboardType: TextInputType.number,
+              decoration: const InputDecoration(
+                border: OutlineInputBorder(),
+                labelText: '비용',
+                hintText: '비용을 입력해주세요.',
+              ),
+              validator: (String? value) {
+                if(value != null && value.isNotEmpty) {
+                  if(int.tryParse(value) == null) {
+                    return '숫자를 입력해주세요.';
+                  }
+                  if (int.parse(value) < 0 || int.parse(value) > 5) {
+                    return '0 ~ 5 사이의 숫자를 입력해주세요.';
+                  }
+                }
+                return null;
+              },
+              onSaved: (newValue) => cost = (newValue != null && newValue.isNotEmpty) ? int.parse(newValue) : null,
+            ),
+            const SizedBox(height: 10),
+            TextFormField(
+              initialValue: hobbyHistoryModel?.memo ?? '',
+              keyboardType: TextInputType.text,
+              decoration: const InputDecoration(
+                border: OutlineInputBorder(),
+                labelText: '메모',
+                hintText: '메모를 입력해주세요.',
+              ),
+              validator: (String? value) {
+                if (value == null || value.isEmpty) {
+                  return '메모를 입력해주세요.';
+                }
+                return null;
+              },
+              onSaved: (newValue) => memo = newValue,
             ),
             const SizedBox(height: 10),
             ElevatedButton(
@@ -204,10 +290,33 @@ class _HobbyHistoryInputModalState
     if (formKey.currentState!.validate()) {
       formKey.currentState!.save();
 
-      ref.read(hobbyHistoryListProvider(DateTime.now()).notifier)
-          .createHobbyHistory(
-              hobbyId: 1, score: score, cost: cost, hobbyDate: DateTime.now());
+      if(widget.hobbyHistoryId != null) {
+        ref.read(hobbyHistoryListProvider(DateTime.now()).notifier)
+            .updateHobbyHistory(
+            hobbyHistoryId: widget.hobbyHistoryId!,
+            categoryId: category!.id,
+            name: name!,
+            hobbyDate: hobbyDate!,
+            startTime: startTime!,
+            endTime: endTime!,
+            memo: memo,
+            score: score,
+            cost: cost
+        );
+      } else {
+        ref.read(hobbyHistoryListProvider(DateTime.now()).notifier)
+            .createHobbyHistory(
+            categoryId: category!.id,
+            name: name!,
+            hobbyDate: hobbyDate!,
+            startTime: startTime!,
+            endTime: endTime!,
+            memo: memo,
+            score: score,
+            cost: cost
+        );
+      }
+      Navigator.of(context).pop();
     }
-    Navigator.of(context).pop();
   }
 }
