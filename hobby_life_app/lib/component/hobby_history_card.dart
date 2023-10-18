@@ -33,12 +33,6 @@ class HobbyHistoryCard extends StatelessWidget {
         title: Text(name),
         subtitle: Row(
           children: [
-            Text(categoryId.toString()),
-            const SizedBox(width: 10),
-            Text('${score ?? 0}점'),
-            const SizedBox(width: 10),
-            Text('${cost ?? 0}원'),
-            const SizedBox(width: 10),
             Text('$startTime ~ $endTime'),
           ],
         ),

@@ -53,9 +53,9 @@ class _ChatroomScreenState extends ConsumerState<ChatroomScreen> {
       _client!.activate();
     }
 
-    WidgetsBinding.instance.addPostFrameCallback((timeStamp) {
-      _scrollController.jumpTo(_scrollController.position.maxScrollExtent);
-    });
+    // WidgetsBinding.instance.addPostFrameCallback((timeStamp) {
+    //   _scrollController.jumpTo(_scrollController.position.maxScrollExtent);
+    // });
   }
 
   @override
@@ -163,7 +163,7 @@ class _ChatroomScreenState extends ConsumerState<ChatroomScreen> {
               onPressed: () {
                 ref
                     .read(chatroomProvider(widget.id).notifier)
-                    .leaveChatroom(id: widget.id);
+                    .leaveChatroom(chatroomId: widget.id);
                 Navigator.pop(context);
               },
               child: Text('나가기'),

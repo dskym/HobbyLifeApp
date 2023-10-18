@@ -11,7 +11,7 @@ class ChatroomRepository {
     headers: {
       'Content-Type': 'application/json',
       'Accept': 'application/json',
-      'Authorization': 'Bearer eyJhbGciOiJIUzUxMiJ9.eyJzdWIiOiIyIiwiZXhwIjoxNjk3NjMwNDkzfQ.SIzguL_EnaWrHzrNe6wwZQjnOk7GBFMFbIYVLrvZ1_ZwPHHJketMDO1wKVdDmkZFYBuKSraEHVVr5zC9v7ZBYQ',
+      'Authorization': 'Bearer eyJhbGciOiJIUzUxMiJ9.eyJzdWIiOiIyIiwiZXhwIjoxNjk3NzIzNjg4fQ.X3QH5943Mp5eTtqd1HAwY89KSfSS14KvPifSeIaUv0jrF4zYYrCdEvBSOr7W3RLXVLNVpWGbc-VvarIxxn29RQ',
     },
   ));
 

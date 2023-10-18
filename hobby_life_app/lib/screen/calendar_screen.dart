@@ -51,7 +51,6 @@ class _CalendarScreenState extends ConsumerState<CalendarScreen> {
                   holidayTextStyle: TextStyle(
                     color: Colors.blue,
                   ),
-                  markersAlignment: Alignment.bottomRight,
                 ),
                 firstDay: DateTime.utc(1900, 1, 1),
                 lastDay: DateTime.utc(2100, 12, 31),
@@ -64,7 +63,9 @@ class _CalendarScreenState extends ConsumerState<CalendarScreen> {
                   });
                 },
                 onPageChanged: (focusedDay) {
-                  selectedDate = focusedDay;
+                  setState(() {
+                    selectedDate = focusedDay;
+                  });
                 },
                 selectedDayPredicate: (day) {
                   return isSameDay(day, selectedDate);
@@ -77,7 +78,7 @@ class _CalendarScreenState extends ConsumerState<CalendarScreen> {
               const Divider(
                 height: 1,
                 thickness: 1,
-                color: Colors.black,
+                color: Colors.grey,
               ),
               Expanded(
                 child: ListView.builder(

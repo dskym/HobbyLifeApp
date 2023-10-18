@@ -115,7 +115,7 @@ class _ChatroomInputModalState extends ConsumerState<ChatroomInputModal> {
           .createChatroom(name: name!, description: description!);
       } else {
         ref.read(chatroomListProvider.notifier)
-            .updateChatroom(id: chatroomId!, name: name!, description: description!);
+            .updateChatroom(chatroomId: chatroomId!, name: name!, description: description!);
       }
       Navigator.of(context).pop();
     }
