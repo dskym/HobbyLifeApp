@@ -1,10 +1,15 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:flutter_secure_storage/flutter_secure_storage.dart';
+import 'package:hobby_life_app/provider/user_auth_provider.dart';
 
-class SettingScreen extends StatelessWidget {
+class SettingScreen extends ConsumerWidget {
   const SettingScreen({Key? key}) : super(key: key);
 
+  final FlutterSecureStorage _storage = const FlutterSecureStorage();
+
   @override
-  Widget build(BuildContext context) {
+  Widget build(BuildContext context, WidgetRef ref) {
     return Scaffold(
       appBar: AppBar(
         centerTitle: true,
@@ -54,6 +59,15 @@ class SettingScreen extends StatelessWidget {
           const ListTile(
             title: Text('버전정보'),
             trailing: Text('1.0.0'),
+          ),
+          ListTile(
+            title: Text('로그아웃'),
+            onTap: () {
+              _storage.delete(key: 'accessToken');
+              _storage.delete(key: 'refreshToken');
+              ref.read(isLoginProvider.notifier).update((state) => false);
+              Navigator.of(context).pop();
+            },
           ),
         ],
       )

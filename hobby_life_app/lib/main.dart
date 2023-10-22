@@ -1,5 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:hobby_life_app/provider/user_auth_provider.dart';
+import 'package:hobby_life_app/provider/user_provider.dart';
+import 'package:hobby_life_app/screen/login_screen.dart';
 import 'package:hobby_life_app/screen/main_screen.dart';
 import 'package:intl/date_symbol_data_local.dart';
 
@@ -9,12 +12,12 @@ void main() {
   runApp(const ProviderScope(child: MyApp()));
 }
 
-class MyApp extends StatelessWidget {
+class MyApp extends ConsumerWidget {
   const MyApp({super.key});
 
   // This widget is the root of your application.
   @override
-  Widget build(BuildContext context) {
+  Widget build(BuildContext context, WidgetRef ref) {
     return MaterialApp(
       title: 'Flutter Demo',
       debugShowCheckedModeBanner: false,
@@ -37,7 +40,9 @@ class MyApp extends StatelessWidget {
         colorScheme: ColorScheme.fromSeed(seedColor: Colors.deepPurple),
         useMaterial3: true,
       ),
-      home: const MainScreen(),
+      home: ref.watch(isLoginProvider)
+          ? const MainScreen()
+          : const LoginScreen(),
     );
   }
 }
