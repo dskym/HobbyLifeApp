@@ -1,11 +1,14 @@
 import 'dart:collection';
+import 'dart:io';
 
 import 'package:dio/dio.dart';
+import 'package:flutter_secure_storage/flutter_secure_storage.dart';
 import 'package:hobby_life_app/model/common_response_model.dart';
 import 'package:hobby_life_app/model/hobby_history_model.dart';
 import 'package:intl/intl.dart';
 
 class HobbyHistoryRepository {
+  final FlutterSecureStorage _flutterSecureStorage = const FlutterSecureStorage();
   final _dio = Dio(BaseOptions(
     baseUrl: 'http://10.0.2.2:8080',
     connectTimeout: const Duration(seconds: 1).inMilliseconds,
@@ -13,7 +16,6 @@ class HobbyHistoryRepository {
     headers: {
       'Content-Type': 'application/json',
       'Accept': 'application/json',
-      'Authorization': 'Bearer eyJhbGciOiJIUzUxMiJ9.eyJzdWIiOiIyIiwiZXhwIjoxNjk4MDQzOTg1fQ.WcOUu29GimufWaaKmlnlnuTudHLPm3FU8gISNDd6S5I3FX-8iLeXycTe1Wob1dR2gUTQAGsnf6s0zgakSZprEA',
     },
   ));
 
@@ -21,7 +23,9 @@ class HobbyHistoryRepository {
     final response = await _dio.get('/hobby/history', queryParameters: {
       'startDate': DateFormat('yyyy-MM-dd').format(DateTime(date.year, date.month, 1)),
       'endDate': DateFormat('yyyy-MM-dd').format(DateTime(date.year, date.month + 1, 0)),
-    });
+    }, options: Options(headers: {
+      HttpHeaders.authorizationHeader: await _flutterSecureStorage.read(key: 'accessToken'),
+    }));
 
     print("getAllHobbyHistory : ${response.data}");
     CommonResponseModel<dynamic> commonResponse = CommonResponseModel.fromJson(response.data);
@@ -42,14 +46,18 @@ class HobbyHistoryRepository {
       'score': score,
       'cost': cost,
       'memo': memo,
-    });
+    }, options: Options(headers: {
+      HttpHeaders.authorizationHeader: await _flutterSecureStorage.read(key: 'accessToken'),
+    }));
     print("addHobbyHistory : ${response.data}");
     CommonResponseModel<dynamic> commonResponse = CommonResponseModel.fromJson(response.data);
     return HobbyHistoryModel.fromJson(commonResponse.data!);
   }
 
   Future<void> deleteHobbyHistory({required int hobbyHistoryId}) async {
-    final response = await _dio.delete('/hobby/history/$hobbyHistoryId');
+    final response = await _dio.delete('/hobby/history/$hobbyHistoryId', options: Options(headers: {
+      HttpHeaders.authorizationHeader: await _flutterSecureStorage.read(key: 'accessToken'),
+    }));
     print("deleteHobbyHistory : ${response.data}");
   }
 
@@ -63,14 +71,18 @@ class HobbyHistoryRepository {
       'score': score,
       'cost': cost,
       'memo': memo,
-    });
+    }, options: Options(headers: {
+      HttpHeaders.authorizationHeader: await _flutterSecureStorage.read(key: 'accessToken'),
+    }));
     print("updateHobbyHistory : ${response.data}");
     CommonResponseModel<dynamic> commonResponse = CommonResponseModel.fromJson(response.data);
     return HobbyHistoryModel.fromJson(commonResponse.data!);
   }
 
   Future<HobbyHistoryModel> getHobbyHistory({required int hobbyHistoryId}) async {
-    final response = await _dio.get('/hobby/history/$hobbyHistoryId');
+    final response = await _dio.get('/hobby/history/$hobbyHistoryId', options: Options(headers: {
+      HttpHeaders.authorizationHeader: await _flutterSecureStorage.read(key: 'accessToken'),
+    }));
     print("getHobbyHistory : ${response.data}");
     CommonResponseModel<dynamic> commonResponse = CommonResponseModel.fromJson(response.data);
     return HobbyHistoryModel.fromJson(commonResponse.data!);

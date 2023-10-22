@@ -1,8 +1,12 @@
+import 'dart:io';
+
 import 'package:dio/dio.dart';
+import 'package:flutter_secure_storage/flutter_secure_storage.dart';
 import 'package:hobby_life_app/model/common_response_model.dart';
 import 'package:hobby_life_app/model/community_model.dart';
 
 class CommunityRepository {
+  final FlutterSecureStorage _flutterSecureStorage = const FlutterSecureStorage();
   final _dio = Dio(BaseOptions(
     baseUrl: 'http://10.0.2.2:8080',
     connectTimeout: const Duration(seconds: 1).inMilliseconds,
@@ -10,7 +14,6 @@ class CommunityRepository {
     headers: {
       'Content-Type': 'application/json',
       'Accept': 'application/json',
-      'Authorization': 'Bearer eyJhbGciOiJIUzUxMiJ9.eyJzdWIiOiIyIiwiZXhwIjoxNjk4MDQzOTg1fQ.WcOUu29GimufWaaKmlnlnuTudHLPm3FU8gISNDd6S5I3FX-8iLeXycTe1Wob1dR2gUTQAGsnf6s0zgakSZprEA',
     },
   ));
 
@@ -19,14 +22,18 @@ class CommunityRepository {
       'title': title,
       'description': description,
       'categoryId': categoryId,
-    });
+    }, options: Options(headers: {
+      HttpHeaders.authorizationHeader: await _flutterSecureStorage.read(key: 'accessToken'),
+    }));
     print("createCommunity : ${response.data}");
     CommonResponseModel<dynamic> commonResponse = CommonResponseModel.fromJson(response.data);
     return CommunityModel.fromJson(commonResponse.data!);
   }
 
   Future<void> deleteCommunity({required int communityId}) async {
-    final response = await _dio.delete('/community/$communityId');
+    final response = await _dio.delete('/community/$communityId', options: Options(headers: {
+      HttpHeaders.authorizationHeader: await _flutterSecureStorage.read(key: 'accessToken'),
+    }));
     print("deleteCommunity : ${response.data}");
   }
 
@@ -35,38 +42,50 @@ class CommunityRepository {
       'title': title,
       'description': description,
       'categoryId': categoryId,
-    });
+    }, options: Options(headers: {
+      HttpHeaders.authorizationHeader: await _flutterSecureStorage.read(key: 'accessToken'),
+    }));
     print("updateCommunity : ${response.data}");
     CommonResponseModel<dynamic> commonResponse = CommonResponseModel.fromJson(response.data);
     return CommunityModel.fromJson(commonResponse.data!);
   }
 
   Future<CommunityModel> getCommunity({required int communityId}) async {
-    final response = await _dio.get('/community/$communityId');
+    final response = await _dio.get('/community/$communityId', options: Options(headers: {
+      HttpHeaders.authorizationHeader: await _flutterSecureStorage.read(key: 'accessToken'),
+    }));
     print("getCommunity : ${response.data}");
     CommonResponseModel<dynamic> commonResponse = CommonResponseModel.fromJson(response.data);
     return CommunityModel.fromJson(commonResponse.data!);
   }
 
   Future<List<CommunityModel>> getAllCommunity() async {
-    final response = await _dio.get('/community');
+    final response = await _dio.get('/community', options: Options(headers: {
+      HttpHeaders.authorizationHeader: await _flutterSecureStorage.read(key: 'accessToken'),
+    }));
     print("getAllCommunity : ${response.data}");
     CommonResponseModel<dynamic> commonResponse = CommonResponseModel.fromJson(response.data);
     return List.from(commonResponse.data?.map((e) => CommunityModel.fromJson(e)) ?? []);
   }
 
   Future<void> joinCommunity({required int communityId}) async {
-    final response = await _dio.post('/community/$communityId/join');
+    final response = await _dio.post('/community/$communityId/join', options: Options(headers: {
+      HttpHeaders.authorizationHeader: await _flutterSecureStorage.read(key: 'accessToken'),
+    }));
     print("joinCommunity : ${response.data}");
   }
 
   Future<void> leaveCommunity({required int communityId}) async {
-    await _dio.delete('/community/$communityId/leave');
+    await _dio.delete('/community/$communityId/leave', options: Options(headers: {
+      HttpHeaders.authorizationHeader: await _flutterSecureStorage.read(key: 'accessToken'),
+    }));
     print("leaveCommunity");
   }
 
   Future<List<CommunityModel>> getJoinCommunity() async {
-    final response = await _dio.get('/community/join');
+    final response = await _dio.get('/community/join', options: Options(headers: {
+      HttpHeaders.authorizationHeader: await _flutterSecureStorage.read(key: 'accessToken'),
+    }));
     print("getJoinCommunity : ${response.data}");
     CommonResponseModel<dynamic> commonResponse = CommonResponseModel.fromJson(response.data);
     return List.from(commonResponse.data?.map((e) => CommunityModel.fromJson(e)) ?? []);
