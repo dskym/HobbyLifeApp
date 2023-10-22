@@ -1,5 +1,6 @@
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:hobby_life_app/model/community_model.dart';
+import 'package:hobby_life_app/model/user_model.dart';
 import 'package:hobby_life_app/repository/community_repository.dart';
 import 'package:riverpod_annotation/riverpod_annotation.dart';
 
@@ -14,6 +15,14 @@ class Community extends _$Community {
   Future<CommunityModel> build(int communityId) async {
     List<CommunityModel> communityModelList = await ref.watch(communityListProvider.future);
     return communityModelList.firstWhere((element) => element.communityId == communityId);
+  }
+}
+
+@riverpod
+class CommunityMemberList extends _$CommunityMemberList {
+  @override
+  Future<List<UserModel>> build(int communityId) async {
+    return ref.watch(communityRepositoryProvider).getJoinCommunityMember(communityId: communityId);
   }
 }
 

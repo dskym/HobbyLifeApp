@@ -4,6 +4,7 @@ import 'package:dio/dio.dart';
 import 'package:flutter_secure_storage/flutter_secure_storage.dart';
 import 'package:hobby_life_app/model/common_response_model.dart';
 import 'package:hobby_life_app/model/community_model.dart';
+import 'package:hobby_life_app/model/user_model.dart';
 
 class CommunityRepository {
   final FlutterSecureStorage _flutterSecureStorage = const FlutterSecureStorage();
@@ -89,5 +90,14 @@ class CommunityRepository {
     print("getJoinCommunity : ${response.data}");
     CommonResponseModel<dynamic> commonResponse = CommonResponseModel.fromJson(response.data);
     return List.from(commonResponse.data?.map((e) => CommunityModel.fromJson(e)) ?? []);
+  }
+
+  Future<List<UserModel>> getJoinCommunityMember({required int communityId}) async {
+    final response = await _dio.get('/community/$communityId/member', options: Options(headers: {
+      HttpHeaders.authorizationHeader: await _flutterSecureStorage.read(key: 'accessToken'),
+    }));
+    print("getJoinCommunityMember : ${response.data}");
+    CommonResponseModel<dynamic> commonResponse = CommonResponseModel.fromJson(response.data);
+    return List.from(commonResponse.data?.map((e) => UserModel.fromJson(e)) ?? []);
   }
 }
