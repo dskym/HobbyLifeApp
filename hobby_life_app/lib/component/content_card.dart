@@ -7,6 +7,7 @@ class ContentCard extends StatelessWidget {
   final String title;
   final String detail;
   final String authorName;
+  final bool isJoin;
 
   const ContentCard(
       {Key? key,
@@ -14,7 +15,8 @@ class ContentCard extends StatelessWidget {
       required this.contentId,
       required this.title,
       required this.detail,
-      required this.authorName})
+      required this.authorName,
+      required this.isJoin})
       : super(key: key);
 
   @override
@@ -25,6 +27,14 @@ class ContentCard extends StatelessWidget {
         subtitle: Text(detail),
         trailing: Text(authorName),
         onTap: () {
+          if(!isJoin) {
+            ScaffoldMessenger.of(context).showSnackBar(
+              const SnackBar(
+                content: Text('커뮤니티에 가입해야 컨텐츠를 볼 수 있습니다.'),
+              ),
+            );
+            return;
+          };
           Navigator.push(
             context,
             PageRouteBuilder(

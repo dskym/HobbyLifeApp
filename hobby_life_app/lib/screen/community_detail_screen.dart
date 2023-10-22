@@ -62,7 +62,6 @@ class _CommunityDetailScreenState extends ConsumerState<CommunityDetailScreen> {
                             ref
                                 .read(communityListProvider.notifier)
                                 .joinCommunity(communityId: widget.communityId);
-                            Navigator.pop(context);
                           },
                           icon: const Text('가입'),
                         ),
@@ -100,6 +99,7 @@ class _CommunityDetailScreenState extends ConsumerState<CommunityDetailScreen> {
                                 title: snapshot.data[index].title,
                                 detail: snapshot.data[index].detail,
                                 authorName: snapshot.data[index].authorName,
+                                isJoin: community.isJoin,
                               );
                             },
                           );
@@ -112,13 +112,14 @@ class _CommunityDetailScreenState extends ConsumerState<CommunityDetailScreen> {
                   ],
                 ),
               ),
-              floatingActionButton: FloatingActionButton(
+              floatingActionButton: community.isJoin ? FloatingActionButton(
                 backgroundColor: Colors.blue,
                 foregroundColor: Colors.white,
                 shape: const CircleBorder(),
                 onPressed: () => showContentInputModal(context),
                 child: const Icon(Icons.add),
-              ));
+              ) : null,
+          );
         } else {
           return const Center(child: CircularProgressIndicator());
         }
