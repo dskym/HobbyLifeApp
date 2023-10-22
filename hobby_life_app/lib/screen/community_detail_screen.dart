@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:hobby_life_app/component/community_input_modal.dart';
+import 'package:hobby_life_app/component/community_member_card.dart';
 import 'package:hobby_life_app/component/content_card.dart';
 import 'package:hobby_life_app/component/content_input_modal.dart';
 import 'package:hobby_life_app/model/community_model.dart';
@@ -78,6 +79,33 @@ class _CommunityDetailScreenState extends ConsumerState<CommunityDetailScreen> {
                     ),
                     const SizedBox(height: 10),
                     Text(community.description),
+                    const SizedBox(height: 20),
+                    const Text(
+                      '멤버',
+                      style: TextStyle(fontSize: 20),
+                    ),
+                    const SizedBox(height: 20),
+                    SingleChildScrollView(
+                      scrollDirection: Axis.horizontal,
+                      child: ref.watch(communityMemberListProvider(widget.communityId)).when(
+                        data: (memberList) {
+                          print('test : $memberList');
+                          return Row(
+                            children: [
+                              ...memberList.map((member) {
+                                return CommunityMemberCard(
+                                  userId: member.userId,
+                                  name: member.name,
+                                  profileImage: '',
+                                );
+                              }).toList(),
+                            ],
+                          );
+                        },
+                        error: (error, stackTrace) => const SizedBox(),
+                        loading: () => const Center(child: CircularProgressIndicator()),
+                      ),
+                    ),
                     const SizedBox(height: 20),
                     const Text(
                       '게시글',
