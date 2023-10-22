@@ -86,7 +86,7 @@ class _HobbyHistoryInputModalState
               Row(
                 children: [
                   IconButton(
-                    icon: const Icon(Icons.keyboard_arrow_left_outlined),
+                    icon: const Icon(Icons.close),
                     onPressed: () => goBackScreen(context),
                   ),
                   const SizedBox(width: 10),

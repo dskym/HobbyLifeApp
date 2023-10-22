@@ -59,12 +59,11 @@ class _ContentDetailScreenState extends ConsumerState<ContentDetailScreen> {
                 child: Container(
                   padding: const EdgeInsets.all(20),
                   child: Column(
+                    crossAxisAlignment: CrossAxisAlignment.start,
                     children: [
-                      const Text('세부 내용'),
-                      Text(content.detail),
-                      const Divider(),
-                      const Text('작성자'),
                       Text(content.authorName),
+                      const Divider(),
+                      Text(content.detail),
                       const Divider(),
                       const Text('댓글'),
                       FutureBuilder(

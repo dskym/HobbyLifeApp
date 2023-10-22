@@ -71,11 +71,20 @@ class _CommunityDetailScreenState extends ConsumerState<CommunityDetailScreen> {
               body: Container(
                 padding: const EdgeInsets.all(20),
                 child: Column(
+                  crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
-                    const Text('커뮤니티 상세 설명'),
+                    const Text(
+                      '설명',
+                      style: TextStyle(fontSize: 20),
+                    ),
+                    const SizedBox(height: 10),
                     Text(community.description),
-                    const Divider(),
-                    const Text('게시글'),
+                    const SizedBox(height: 20),
+                    const Text(
+                      '게시글',
+                      style: TextStyle(fontSize: 20),
+                    ),
+                    const SizedBox(height: 10),
                     FutureBuilder(
                       future: ref.watch(
                           contentListProvider(widget.communityId).future),

@@ -21,7 +21,6 @@ class ContentCard extends StatelessWidget {
   Widget build(BuildContext context) {
     return Card(
       child: ListTile(
-        leading: const Icon(Icons.content_copy),
         title: Text(title),
         subtitle: Text(detail),
         trailing: Text(authorName),
