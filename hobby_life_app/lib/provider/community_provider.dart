@@ -1,3 +1,4 @@
+import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:hobby_life_app/model/community_model.dart';
 import 'package:hobby_life_app/repository/community_repository.dart';
 import 'package:riverpod_annotation/riverpod_annotation.dart';
@@ -5,6 +6,7 @@ import 'package:riverpod_annotation/riverpod_annotation.dart';
 part 'community_provider.g.dart';
 
 final communityRepositoryProvider = Provider<CommunityRepository>((ref) => CommunityRepository());
+final communityCategoryProvider = StateProvider<int>((ref) => 0);
 
 @riverpod
 class Community extends _$Community {

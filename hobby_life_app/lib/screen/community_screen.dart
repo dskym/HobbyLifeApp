@@ -1,7 +1,9 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:hobby_life_app/component/category_card.dart';
 import 'package:hobby_life_app/component/community_card.dart';
 import 'package:hobby_life_app/model/community_model.dart';
+import 'package:hobby_life_app/provider/category_provider.dart';
 import 'package:hobby_life_app/provider/community_provider.dart';
 
 class CommunityScreen extends ConsumerStatefulWidget {
@@ -38,6 +40,8 @@ class _CommunityScreenState extends ConsumerState<CommunityScreen>
       future: ref.watch(communityListProvider.future),
       builder: (BuildContext context, AsyncSnapshot snapshot) {
         if (snapshot.hasData) {
+          final selectedCategoryId = ref.watch(communityCategoryProvider);
+          final communityList = snapshot.data.where((element) => selectedCategoryId == 0 || element.communityId == selectedCategoryId).toList();
           return Column(
             children: [
               TabBar(
@@ -45,12 +49,35 @@ class _CommunityScreenState extends ConsumerState<CommunityScreen>
                 tabs: _tabs,
                 onTap: (index) => changeTabBarEvent(index),
               ),
+              SingleChildScrollView(
+                scrollDirection: Axis.horizontal,
+                child: ref.watch(categoryListProvider).when(
+                  data: (categoryList) {
+                    return Row(
+                      children: [
+                        const CategoryCard(
+                          categoryId: 0,
+                          categoryName: '전체',
+                        ),
+                        ...categoryList.map((category) {
+                          return CategoryCard(
+                            categoryId: category.id,
+                            categoryName: category.name,
+                          );
+                        }).toList(),
+                      ],
+                    );
+                  },
+                  error: (error, stackTrace) => const SizedBox(),
+                  loading: () => const Center(child: CircularProgressIndicator()),
+                ),
+              ),
               Expanded(
                 child: TabBarView(
                   controller: _tabController,
                   children: [
-                    getAllCommunity(snapshot.data),
-                    getMyCommunity(snapshot.data),
+                    getAllCommunity(communityList),
+                    getMyCommunity(communityList),
                 ]),
               ),
             ],
