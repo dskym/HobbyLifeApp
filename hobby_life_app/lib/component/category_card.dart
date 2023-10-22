@@ -11,6 +11,7 @@ class CategoryCard extends ConsumerWidget {
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
+    final selectedCategoryId = ref.watch(communityCategoryProvider);
     return GestureDetector(
       onTap: () {
         ref.read(communityCategoryProvider.notifier).update((state) => categoryId);
@@ -21,6 +22,7 @@ class CategoryCard extends ConsumerWidget {
           shape: BoxShape.rectangle,
           border: Border.all(color: Colors.grey),
           borderRadius: BorderRadius.circular(10),
+          color: selectedCategoryId == categoryId ? Colors.grey[200] : Colors.white,
         ),
         padding: const EdgeInsets.all(5),
         margin: const EdgeInsets.all(5),
