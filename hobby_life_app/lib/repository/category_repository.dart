@@ -10,7 +10,7 @@ class CategoryRepository {
     headers: {
       'Content-Type': 'application/json',
       'Accept': 'application/json',
-      'Authorization': 'Bearer eyJhbGciOiJIUzUxMiJ9.eyJzdWIiOiIyIiwiZXhwIjoxNjk3NzIzNjg4fQ.X3QH5943Mp5eTtqd1HAwY89KSfSS14KvPifSeIaUv0jrF4zYYrCdEvBSOr7W3RLXVLNVpWGbc-VvarIxxn29RQ',
+      'Authorization': 'Bearer eyJhbGciOiJIUzUxMiJ9.eyJzdWIiOiIyIiwiZXhwIjoxNjk4MDQzOTg1fQ.WcOUu29GimufWaaKmlnlnuTudHLPm3FU8gISNDd6S5I3FX-8iLeXycTe1Wob1dR2gUTQAGsnf6s0zgakSZprEA',
     },
   ));
 
