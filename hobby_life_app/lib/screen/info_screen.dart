@@ -23,31 +23,35 @@ class InfoScreen extends ConsumerWidget {
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
-    return SingleChildScrollView(
-      child: FutureBuilder(
-        future: ref.watch(userProvider.future),
-        builder: (BuildContext context, AsyncSnapshot snapshot) {
-          if (snapshot.hasData) {
-            final user = snapshot.data;
-            return Column(
+    return FutureBuilder(
+      future: ref.watch(userProvider.future),
+      builder: (BuildContext context, AsyncSnapshot snapshot) {
+        if (snapshot.hasData) {
+          final user = snapshot.data;
+          return Padding(
+            padding: const EdgeInsets.all(15.0),
+            child: Column(
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
-                const SizedBox(height: 20),
-                Center(
-                  child: const Icon(
-                    Icons.person,
-                    size: 100,
-                    color: Colors.grey,
-                  ),
+                Row(
+                  children: [
+                    const Icon(
+                      Icons.person,
+                      size: 100,
+                      color: Colors.grey,
+                    ),
+                    const SizedBox(width: 20),
+                    Column(
+                      children: [
+                        Text(user.name),
+                        const SizedBox(height: 10),
+                        Text(user.email),
+                      ],
+                    )
+                  ],
                 ),
-                Center(
-                  child: Text(user.name),
-                ),
-                const SizedBox(height: 20),
-                Center(
-                  child: Text(user.email),
-                ),
-                const SizedBox(height: 20),
+                const Divider(),
+                const SizedBox(height: 10),
                 const Text('관심 있는 취미 생활'),
                 const SizedBox(height: 20),
                 Row(
@@ -65,65 +69,13 @@ class InfoScreen extends ConsumerWidget {
                     ),
                   ],
                 ),
-                const SizedBox(height: 20),
-                const Text('많이 한 취미 생활'),
-                const SizedBox(height: 20),
-                Row(
-                  children: [
-                    Expanded(
-                      child: Wrap(
-                        spacing: 10,
-                        runSpacing: 10,
-                        children: _hobbyList
-                            .map((e) => Chip(
-                          label: Text(e),
-                        ))
-                            .toList(),
-                      ),
-                    ),
-                  ],
-                ),
-                const Text('많이 비용을 쓴 취미 생활'),
-                const SizedBox(height: 20),
-                Row(
-                  children: [
-                    Expanded(
-                      child: Wrap(
-                        spacing: 10,
-                        runSpacing: 10,
-                        children: _hobbyList
-                            .map((e) => Chip(
-                          label: Text(e),
-                        ))
-                            .toList(),
-                      ),
-                    ),
-                  ],
-                ),
-                const Text('가장 만족한 취미 생활'),
-                const SizedBox(height: 20),
-                Row(
-                  children: [
-                    Expanded(
-                      child: Wrap(
-                        spacing: 10,
-                        runSpacing: 10,
-                        children: _hobbyList
-                            .map((e) => Chip(
-                          label: Text(e),
-                        ))
-                            .toList(),
-                      ),
-                    ),
-                  ],
-                ),
               ],
-            );
-          } else {
-            return const Center(child: CircularProgressIndicator());
-          }
-        },
-      ),
+            ),
+          );
+        } else {
+          return const Center(child: CircularProgressIndicator());
+        }
+      },
     );
   }
 }
