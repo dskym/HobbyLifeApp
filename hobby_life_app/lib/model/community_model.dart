@@ -10,6 +10,7 @@ class CommunityModel with _$CommunityModel {
     required String title,
     required String description,
     required int authorId,
+    required int categoryId,
     required String categoryName,
     required int memberCount,
     required bool isJoin,
