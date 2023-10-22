@@ -1,9 +1,13 @@
+import 'dart:io';
+
 import 'package:dio/dio.dart';
+import 'package:flutter_secure_storage/flutter_secure_storage.dart';
 import 'package:hobby_life_app/model/common_response_model.dart';
 import 'package:hobby_life_app/model/user_auth_model.dart';
 import 'package:hobby_life_app/model/user_model.dart';
 
 class UserRepository {
+  final FlutterSecureStorage _flutterSecureStorage = const FlutterSecureStorage();
   final _dio = Dio(BaseOptions(
     baseUrl: 'http://10.0.2.2:8080',
     connectTimeout: const Duration(seconds: 1).inMilliseconds,
@@ -11,12 +15,13 @@ class UserRepository {
     headers: {
       'Content-Type': 'application/json',
       'Accept': 'application/json',
-      'Authorization': 'Bearer eyJhbGciOiJIUzUxMiJ9.eyJzdWIiOiIyIiwiZXhwIjoxNjk4MDQzOTg1fQ.WcOUu29GimufWaaKmlnlnuTudHLPm3FU8gISNDd6S5I3FX-8iLeXycTe1Wob1dR2gUTQAGsnf6s0zgakSZprEA',
     },
   ));
 
   Future<UserModel> getUser() async {
-    final response = await _dio.get('/user');
+    final response = await _dio.get('/user', options: Options(headers: {
+      HttpHeaders.authorizationHeader: await _flutterSecureStorage.read(key: 'accessToken'),
+    }));
     print("getUser : ${response.data}");
     CommonResponseModel<dynamic> commonResponse = CommonResponseModel.fromJson(response.data);
     return UserModel.fromJson(commonResponse.data!);
@@ -34,7 +39,9 @@ class UserRepository {
   }
 
   Future<UserAuthModel> leaveUser() async {
-    final response = await _dio.delete('/user');
+    final response = await _dio.delete('/user', options: Options(headers: {
+      HttpHeaders.authorizationHeader: await _flutterSecureStorage.read(key: 'accessToken'),
+    }));
     print("leaveUser : ${response.data}");
     CommonResponseModel<dynamic> commonResponse = CommonResponseModel.fromJson(response.data);
     return UserAuthModel.fromJson(commonResponse.data!);
