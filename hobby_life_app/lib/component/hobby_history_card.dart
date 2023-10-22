@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:hobby_life_app/util/CategoryUtils.dart';
 import 'hobby_history_input_modal.dart';
 
 class HobbyHistoryCard extends StatelessWidget {
@@ -29,13 +30,9 @@ class HobbyHistoryCard extends StatelessWidget {
   Widget build(BuildContext context) {
     return Card(
       child: ListTile(
-        leading: const Icon(Icons.history),
+        leading: CategoryUtils.getCategoryIcon(id),
         title: Text(name),
-        subtitle: Row(
-          children: [
-            Text('$startTime ~ $endTime'),
-          ],
-        ),
+        subtitle: Text('$startTime ~ $endTime'),
         onTap: () => showHobbyHistoryInputModal(context),
       ),
     );
