@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:hobby_life_app/provider/comment_provider.dart';
+import 'package:intl/intl.dart';
 
 class CommentCard extends ConsumerWidget {
   final int communityId;
@@ -31,13 +32,20 @@ class CommentCard extends ConsumerWidget {
       children: [
         ListTile(
           title: Text(detail),
-          subtitle: Text(authorName),
-          trailing: Text(lastModified.toString()),
+          subtitle: Row(
+            crossAxisAlignment: CrossAxisAlignment.start,
+            children: [
+              Text(authorName),
+              const SizedBox(width: 10),
+              Text(DateFormat('yyyy-MM-dd HH:mm:ss').format(lastModified)),
+            ],
+          ),
         ),
         Positioned(
-            top: 8.0,
-            right: 8.0,
+            top: 0.0,
+            right: 4.0,
             child: PopupMenuButton<String>(
+              icon: const Icon(Icons.more_horiz),
               onSelected: (value) {
                 if (value == 'delete') {
                   deleteComment(communityId, contentId, commentId);
@@ -47,17 +55,18 @@ class CommentCard extends ConsumerWidget {
               },
               itemBuilder: (BuildContext context) {
                 return [
-                  PopupMenuItem(
+                  const PopupMenuItem(
                     value: 'edit',
                     child: Text('수정하기'),
                   ),
-                  PopupMenuItem(
+                  const PopupMenuItem(
                     value: 'delete',
                     child: Text('삭제하기'),
                   ),
                 ];
               },
-            )),
+            )
+        ),
       ],
     ));
   }

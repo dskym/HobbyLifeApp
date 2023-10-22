@@ -80,6 +80,33 @@ class _CommunityInputModalState extends ConsumerState<CommunityInputModal> {
               onSaved: (newValue) => title = newValue,
             ),
             const SizedBox(height: 10),
+            ref.watch(categoryListProvider).when(
+                data: (categoryList) {
+                  final CategoryModel? model = categoryList.firstWhereOrNull(
+                          (element) =>
+                      element.name == communityModel?.categoryName);
+                  return DropdownButtonFormField<CategoryModel>(
+                    value: model,
+                    hint: const Text('커뮤니티 카테고리를 선택해주세요.'),
+                    decoration: const InputDecoration(
+                      border: OutlineInputBorder(),
+                    ),
+                    items: categoryList
+                        .map<DropdownMenuItem<CategoryModel>>(
+                            (CategoryModel category) =>
+                            DropdownMenuItem<CategoryModel>(
+                              value: category,
+                              child: Text(category.name),
+                            ))
+                        .toList(),
+                    onChanged: (value) => category = value,
+                    onSaved: (newValue) => category = newValue,
+                  );
+                },
+                loading: () => const Center(child: CircularProgressIndicator()),
+                error: (error, stackTrace) =>
+                const Center(child: Text('에러 발생'))),
+            const SizedBox(height: 10),
             TextFormField(
               initialValue: communityModel?.description ?? '',
               keyboardType: TextInputType.multiline,
@@ -98,36 +125,12 @@ class _CommunityInputModalState extends ConsumerState<CommunityInputModal> {
               onSaved: (newValue) => description = newValue,
             ),
             const SizedBox(height: 10),
-            ref.watch(categoryListProvider).when(
-                data: (categoryList) {
-                  final CategoryModel? model = categoryList.firstWhereOrNull(
-                      (element) =>
-                          element.name == communityModel?.categoryName);
-                  return DropdownButtonFormField<CategoryModel>(
-                    value: model,
-                    hint: const Text('커뮤니티 카테고리를 선택해주세요.'),
-                    decoration: const InputDecoration(
-                      border: OutlineInputBorder(),
-                    ),
-                    items: categoryList
-                        .map<DropdownMenuItem<CategoryModel>>(
-                            (CategoryModel category) =>
-                                DropdownMenuItem<CategoryModel>(
-                                  value: category,
-                                  child: Text(category.name),
-                                ))
-                        .toList(),
-                    onChanged: (value) => category = value,
-                    onSaved: (newValue) => category = newValue,
-                  );
-                },
-                loading: () => const Center(child: CircularProgressIndicator()),
-                error: (error, stackTrace) =>
-                    const Center(child: Text('에러 발생'))),
-            const SizedBox(height: 10),
             ElevatedButton(
+              style: ElevatedButton.styleFrom(
+                minimumSize: const Size(double.infinity, 50),
+              ),
               onPressed: () => onSave(context),
-              child: const Text('저장'),
+              child: const Text('개설하기'),
             ),
           ],
         ),

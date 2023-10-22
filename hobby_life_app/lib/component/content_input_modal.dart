@@ -95,6 +95,9 @@ class _ContentInputModalState extends ConsumerState<ContentInputModal> {
             ),
             const SizedBox(height: 10),
             ElevatedButton(
+              style: ElevatedButton.styleFrom(
+                minimumSize: const Size(double.infinity, 50),
+              ),
               onPressed: () => onSave(context),
               child: const Text('저장'),
             ),
