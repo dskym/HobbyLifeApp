@@ -47,6 +47,7 @@ class _ChatScreenState extends ConsumerState<ChatScreen> with TickerProviderStat
               ),
               Expanded(
                 child: TabBarView(
+                    physics: const NeverScrollableScrollPhysics(),
                     controller: _tabController,
                     children: [
                       getAllCommunity(snapshot.data),
