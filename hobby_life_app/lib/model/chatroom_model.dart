@@ -9,6 +9,7 @@ class ChatroomModel with _$ChatroomModel {
     required int chatroomId,
     required String name,
     required String description,
+    required bool isJoin,
   }) = _ChatroomModel;
 
   factory ChatroomModel.fromJson(Map<String, dynamic> json) =>

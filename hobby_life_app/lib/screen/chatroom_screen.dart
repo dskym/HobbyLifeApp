@@ -138,26 +138,26 @@ class _ChatroomScreenState extends ConsumerState<ChatroomScreen> {
         child: ListView(
           children: [
             const Text('채팅방 참여 멤버'),
-            FutureBuilder(
-              future: ref.watch(chatroomMemberListProvider(widget.id).future),
-              builder: (BuildContext context, AsyncSnapshot snapshot) {
-                if (snapshot.hasData) {
-                  return ListView.builder(
-                    shrinkWrap: true,
-                    itemCount: snapshot.data.length,
-                    itemBuilder: (BuildContext context, int index) {
-                      return ListTile(
-                        title: Text(snapshot.data[index].name),
-                        onTap: () {
-                          print('Item 1 is clicked');
-                        },
-                      );
-                    },
-                  );
-                } else {
-                  return const Center(child: CircularProgressIndicator());
-                }
+            ref.watch(chatroomMemberListProvider(widget.id)).when(
+              data: (userModelList) {
+                return ListView.builder(
+                  shrinkWrap: true,
+                  itemCount: userModelList.length,
+                  itemBuilder: (BuildContext context, int index) {
+                    return ListTile(
+                      title: Text(userModelList[index].name),
+                      onTap: () {
+                        print('Item 1 is clicked');
+                      },
+                    );
+                  },
+                );
               },
+              error: (Object error, StackTrace? stackTrace) {
+                print(error);
+                return const Text('error');
+              },
+              loading: () => const Center(child: CircularProgressIndicator()),
             ),
             ElevatedButton(
               onPressed: () {

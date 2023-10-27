@@ -5,14 +5,18 @@ class ChatroomCard extends StatelessWidget {
   final int chatroomId;
   final String name;
   final String description;
-  final DateTime lastMessageTime;
+  final String? lastMessage;
+  final DateTime? lastMessageTime;
+  final bool isJoin;
 
   const ChatroomCard(
       {Key? key,
       required this.chatroomId,
       required this.name,
       required this.description,
-      required this.lastMessageTime})
+      required this.lastMessage,
+      required this.lastMessageTime,
+      required this.isJoin})
       : super(key: key);
 
   @override
@@ -21,9 +25,18 @@ class ChatroomCard extends StatelessWidget {
       child: ListTile(
         leading: const Icon(Icons.chat),
         title: Text(name),
-        subtitle: Text(description),
+        subtitle: Text(lastMessage ?? ''),
         trailing: Text(lastMessageTime.toString()),
         onTap: () {
+          // if(isJoin == false) {
+          //   ScaffoldMessenger.of(context).showSnackBar(
+          //     const SnackBar(
+          //       content: Text('채팅방에 가입해야 이용할 수 있습니다.'),
+          //     ),
+          //   );
+          //   return;
+          // }
+
           Navigator.push(
             context,
             PageRouteBuilder(
