@@ -10,7 +10,7 @@ class UserRepository {
   final FlutterSecureStorage _flutterSecureStorage = const FlutterSecureStorage();
   final _dio = Dio(BaseOptions(
     baseUrl: 'http://10.0.2.2:8080',
-    connectTimeout: const Duration(seconds: 1).inMilliseconds,
+    connectTimeout: const Duration(seconds: 10).inMilliseconds,
     receiveTimeout: const Duration(seconds: 1).inMilliseconds,
     headers: {
       'Content-Type': 'application/json',

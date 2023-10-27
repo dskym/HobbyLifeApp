@@ -52,23 +52,23 @@ class InfoScreen extends ConsumerWidget {
                 ),
                 const Divider(),
                 const SizedBox(height: 10),
-                const Text('관심 있는 취미 생활'),
-                const SizedBox(height: 20),
-                Row(
-                  children: [
-                    Expanded(
-                      child: Wrap(
-                        spacing: 10,
-                        runSpacing: 10,
-                        children: _hobbyList
-                            .map((e) => Chip(
-                          label: Text(e),
-                        ))
-                            .toList(),
-                      ),
-                    ),
-                  ],
-                ),
+                // const Text('관심 있는 취미 생활'),
+                // const SizedBox(height: 20),
+                // Row(
+                //   children: [
+                //     Expanded(
+                //       child: Wrap(
+                //         spacing: 10,
+                //         runSpacing: 10,
+                //         children: _hobbyList
+                //             .map((e) => Chip(
+                //           label: Text(e),
+                //         ))
+                //             .toList(),
+                //       ),
+                //     ),
+                //   ],
+                // ),
               ],
             ),
           );

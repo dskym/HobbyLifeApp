@@ -1,8 +1,15 @@
+import 'dart:convert';
+
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:hobby_life_app/component/chatroom_card.dart';
+import 'package:hobby_life_app/model/chat_message_model.dart';
 import 'package:hobby_life_app/model/chatroom_model.dart';
+import 'package:hobby_life_app/provider/chat_provider.dart';
 import 'package:hobby_life_app/provider/chatroom_provider.dart';
+import 'package:stomp_dart_client/stomp.dart';
+import 'package:stomp_dart_client/stomp_config.dart';
+import 'package:stomp_dart_client/stomp_frame.dart';
 
 class ChatScreen extends ConsumerStatefulWidget {
   const ChatScreen({super.key});
@@ -19,15 +26,40 @@ class _ChatScreenState extends ConsumerState<ChatScreen> with TickerProviderStat
     const Tab(text: '내가 가입한 채팅방'),
   ];
 
+  StompClient? _client;
 
   @override
   void initState() {
     super.initState();
     _tabController = TabController(length: _tabs.length, vsync: this);
+
+    if(_client == null) {
+      _client = StompClient(
+        config: StompConfig.sockJS(
+          url: 'http://10.0.2.2:8080/ws/chatroom',
+          onConnect: onConnect,
+        ),
+      );
+      _client!.activate();
+    }
+  }
+
+  void onConnect(StompFrame frame) async {
+    final chatroomList = await ref.read(chatroomRepositoryProvider).getJoinChatroom();
+    for (ChatroomModel chatroom in chatroomList) {
+      _client!.subscribe(
+          destination: '/sub/chat/room/${chatroom.chatroomId}',
+          callback: (StompFrame frame) {
+            ChatMessageModel chatMessageModel = ChatMessageModel.fromJson(jsonDecode(frame.body!));
+            ref.read(ChatProvider(chatroom.chatroomId).notifier).addMessage(chatMessageModel);
+            print(frame.body);
+          });
+    }
   }
 
   @override
   void dispose() {
+    _client!.deactivate();
     _tabController.dispose();
     super.dispose();
   }
@@ -50,8 +82,8 @@ class _ChatScreenState extends ConsumerState<ChatScreen> with TickerProviderStat
                     physics: const NeverScrollableScrollPhysics(),
                     controller: _tabController,
                     children: [
-                      getAllCommunity(snapshot.data),
-                      getMyCommunity(snapshot.data),
+                      getAllChatroom(snapshot.data),
+                      getMyChatroom(snapshot.data),
                     ]),
               ),
             ],
@@ -74,7 +106,7 @@ class _ChatScreenState extends ConsumerState<ChatScreen> with TickerProviderStat
     }
   }
 
-  Widget getAllCommunity(List<ChatroomModel> chatroomList) {
+  Widget getAllChatroom(List<ChatroomModel> chatroomList) {
     return ListView.builder(
       itemCount: chatroomList.length,
       itemBuilder: (BuildContext context, int index) {
@@ -82,21 +114,32 @@ class _ChatScreenState extends ConsumerState<ChatScreen> with TickerProviderStat
           chatroomId: chatroomList[index].chatroomId,
           name: chatroomList[index].name,
           description: chatroomList[index].description,
-          lastMessageTime: DateTime.now(),
+          isJoin: chatroomList[index].isJoin,
+          lastMessage: null,
+          lastMessageTime: null,
         );
       },
     );
   }
 
-  Widget getMyCommunity(List<ChatroomModel> chatroomList) {
+  Widget getMyChatroom(List<ChatroomModel> chatroomList) {
     return ListView.builder(
       itemCount: chatroomList.length,
       itemBuilder: (BuildContext context, int index) {
-        return ChatroomCard(
-          chatroomId: chatroomList[index].chatroomId,
-          name: chatroomList[index].name,
-          description: chatroomList[index].description,
-          lastMessageTime: DateTime.now(),
+        final chatMessage = ref.watch(ChatProvider(chatroomList[index].chatroomId));
+        return ref.watch(ChatProvider(chatroomList[index].chatroomId)).when(
+          data: (List<ChatMessageModel> chatList) {
+            return ChatroomCard(
+              chatroomId: chatroomList[index].chatroomId,
+              name: chatroomList[index].name,
+              description: chatroomList[index].description,
+              isJoin: chatroomList[index].isJoin,
+              lastMessage: chatList.isNotEmpty ? chatList.last.message : null,
+              lastMessageTime: chatList.isNotEmpty ? chatList.last.time : null,
+            );
+          },
+          error: (Object error, StackTrace? stackTrace) => const Text('error'),
+          loading: () => const Center(child: CircularProgressIndicator()),
         );
       },
     );

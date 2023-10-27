@@ -1,3 +1,4 @@
+import 'package:firebase_messaging/firebase_messaging.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:flutter_secure_storage/flutter_secure_storage.dart';
@@ -77,11 +78,12 @@ class _LoginScreenState extends ConsumerState<LoginScreen> {
                 height: 50,
                 child: ElevatedButton(
                   onPressed: () async {
+                    final token = await FirebaseMessaging.instance.getToken();
                     if (formKey.currentState!.validate()) {
                       formKey.currentState!.save();
                       final userAuthModel = await ref
                           .read(userAuthRepositoryProvider)
-                          .login(email: email!, password: password!);
+                          .login(email: email!, password: password!, token: token!);
                       await _storage.write(
                         key: 'accessToken',
                         value: userAuthModel.accessToken,
