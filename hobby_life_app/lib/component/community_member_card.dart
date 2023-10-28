@@ -2,11 +2,11 @@ import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 
 class CommunityMemberCard extends ConsumerWidget {
-  final int userId;
+  final int memberId;
   final String name;
   final String profileImage;
 
-  const CommunityMemberCard({Key? key, required this.userId, required this.name, required this.profileImage}) : super(key: key);
+  const CommunityMemberCard({Key? key, required this.memberId, required this.name, required this.profileImage}) : super(key: key);
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
