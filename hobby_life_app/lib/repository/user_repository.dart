@@ -38,12 +38,10 @@ class UserRepository {
     return UserAuthModel.fromJson(commonResponse.data!);
   }
 
-  Future<UserAuthModel> leaveUser() async {
+  Future<void> leaveUser() async {
     final response = await _dio.delete('/user', options: Options(headers: {
       HttpHeaders.authorizationHeader: await _flutterSecureStorage.read(key: 'accessToken'),
     }));
     print("leaveUser : ${response.data}");
-    CommonResponseModel<dynamic> commonResponse = CommonResponseModel.fromJson(response.data);
-    return UserAuthModel.fromJson(commonResponse.data!);
   }
 }
