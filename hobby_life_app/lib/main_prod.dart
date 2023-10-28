@@ -13,7 +13,7 @@ import 'package:intl/date_symbol_data_local.dart';
 void main() async {
   AppConfig.create(
     appName: "Hobbby Life Prod",
-    baseUrl: "http://",
+    baseUrl: "http://pid-env.eba-rmcivdm9.ap-northeast-2.elasticbeanstalk.com",
     flavor: Flavor.PRODUCTION,
   );
 
