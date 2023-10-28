@@ -34,7 +34,7 @@ class _CommunityDetailScreenState extends ConsumerState<CommunityDetailScreen> {
                 actions: [
                   ref.watch(userProvider).when(
                         data: (user) {
-                          if (user.userId == community.authorId) {
+                          if (user.memberId == community.authorId) {
                             return IconButton(
                               onPressed: () =>
                                   showCommunityInputModal(context, community),
@@ -94,7 +94,7 @@ class _CommunityDetailScreenState extends ConsumerState<CommunityDetailScreen> {
                             children: [
                               ...memberList.map((member) {
                                 return CommunityMemberCard(
-                                  userId: member.userId,
+                                  memberId: member.memberId,
                                   name: member.name,
                                   profileImage: '',
                                 );

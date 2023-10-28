@@ -165,6 +165,7 @@ class _ChatroomScreenState extends ConsumerState<ChatroomScreen> {
                     .read(chatroomProvider(widget.id).notifier)
                     .leaveChatroom(chatroomId: widget.id);
                 Navigator.pop(context);
+                Navigator.pop(context);
               },
               child: Text('나가기'),
             ),

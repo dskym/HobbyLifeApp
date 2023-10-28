@@ -17,11 +17,13 @@ class Chatroom extends _$Chatroom {
   Future<void> joinChatroom({required int chatroomId}) async {
     final chatroomRepository = ref.watch(chatroomRepositoryProvider);
     await chatroomRepository.joinChatroom(chatroomId: chatroomId);
+    ref.invalidate(chatroomListProvider);
   }
 
   Future<void> leaveChatroom({required int chatroomId}) async {
     final chatroomRepository = ref.watch(chatroomRepositoryProvider);
     await chatroomRepository.leaveChatroom(chatroomId: chatroomId);
+    ref.invalidate(chatroomListProvider);
   }
 }
 
