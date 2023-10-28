@@ -3,6 +3,7 @@ import 'package:firebase_messaging/firebase_messaging.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_local_notifications/flutter_local_notifications.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:hobby_life_app/AppConfig.dart';
 import 'package:hobby_life_app/firebase_options.dart';
 import 'package:hobby_life_app/provider/user_auth_provider.dart';
 import 'package:hobby_life_app/screen/login_screen.dart';
@@ -10,6 +11,12 @@ import 'package:hobby_life_app/screen/main_screen.dart';
 import 'package:intl/date_symbol_data_local.dart';
 
 void main() async {
+  AppConfig.create(
+    appName: "Hobbby Life Prod",
+    baseUrl: "http://",
+    flavor: Flavor.PRODUCTION,
+  );
+
   WidgetsFlutterBinding.ensureInitialized();
   await Firebase.initializeApp(options: DefaultFirebaseOptions.currentPlatform);
   initializeDateFormatting();
@@ -86,7 +93,7 @@ void initializedNotification() async {
   final flutterLocalNotificationsPlugin = FlutterLocalNotificationsPlugin();
   await flutterLocalNotificationsPlugin
       .resolvePlatformSpecificImplementation<
-          AndroidFlutterLocalNotificationsPlugin>()
+      AndroidFlutterLocalNotificationsPlugin>()
       ?.createNotificationChannel(channel);
 
   await flutterLocalNotificationsPlugin.initialize(

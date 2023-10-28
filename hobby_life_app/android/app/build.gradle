@@ -23,6 +23,21 @@ if (flutterVersionName == null) {
 }
 
 android {
+    flavorDimensions "default"
+
+    productFlavors {
+        dev {
+            dimension "default"
+            applicationId "com.dskym.hobbylifeapp.hobby_life_app_dev"
+            resValue "string", "app_name", "hobby_life_app_dev"
+        }
+        product {
+            dimension "default"
+            applicationId "com.dskym.hobbylifeapp.hobby_life_app_prod"
+            resValue "string", "app_name", "hobby_life_app_prod"
+        }
+    }
+
     namespace "com.dskym.hobbylifeapp.hobby_life_app"
     compileSdkVersion flutter.compileSdkVersion
     ndkVersion flutter.ndkVersion

@@ -3,6 +3,7 @@ import 'dart:io';
 
 import 'package:dio/dio.dart';
 import 'package:flutter_secure_storage/flutter_secure_storage.dart';
+import 'package:hobby_life_app/AppConfig.dart';
 import 'package:hobby_life_app/model/common_response_model.dart';
 import 'package:hobby_life_app/model/hobby_history_model.dart';
 import 'package:intl/intl.dart';
@@ -10,7 +11,7 @@ import 'package:intl/intl.dart';
 class HobbyHistoryRepository {
   final FlutterSecureStorage _flutterSecureStorage = const FlutterSecureStorage();
   final _dio = Dio(BaseOptions(
-    baseUrl: 'http://10.0.2.2:8080',
+    baseUrl: AppConfig.shared.baseUrl,
     connectTimeout: const Duration(seconds: 10).inMilliseconds,
     receiveTimeout: const Duration(seconds: 1).inMilliseconds,
     headers: {
